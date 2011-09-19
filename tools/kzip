@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# KWY file zipper
+# Gregory Kuhlmann - 2004
+
+for file in $@
+do
+  kwyzipper -c $file && gzip $file.kz && rm $file
+done

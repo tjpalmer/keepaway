@@ -1,0 +1,5 @@
+0.1 -> 0.2
+	* Greg: Fixed localization bug that caused players to get confused
+	in unrestricted vision mode.
+	* Greg: Turned on unrestricted vision by default.
+	* Greg: Cleaned up code that had been commented out.

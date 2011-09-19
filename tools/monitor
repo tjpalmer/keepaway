@@ -1,0 +1,36 @@
+#!/bin/csh
+
+# monitor - Gregory Kuhlmann, 2002
+# Start up a monitor in keepaway mode
+
+# Examples:
+# monitor         - start monitor with 20x20 field for first server
+# monitor 25      - start monitor with 25x25 field for first server
+# monitor 20 30 1 - start monitor with 20x30 field for second server
+
+set base_port = 5800          # Server port to connect to
+
+if ("$#argv" == "0") then
+  set ka_length = 20
+  set ka_width = 20
+  set port_inc = 0
+else if ("$#argv" == "1") then
+  set ka_length = $1
+  set ka_width = $1
+  set port_inc = 0
+else if ("$#argv" == "2") then
+  set ka_length = $1
+  set ka_width = $2
+  set port_inc = 0
+else 
+  set ka_length = $1
+  set ka_width = $2
+  set port_inc = $3
+endif
+
+@ port = $base_port + ($port_inc * 10)
+
+set monitor_opts = "-m_keepaway 1 -m_keepaway_length $ka_length -m_keepaway_width $ka_width -m_port $port"
+
+echo Starting monitor on port $port...
+rcssmonitor $monitor_opts &

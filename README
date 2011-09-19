@@ -1,0 +1,115 @@
+This project is intended as a public but unofficial repository for updates to
+the Keepaway benchmark player framework created at UT Austin by Gregory
+Kuhlmann and Peter Stone.
+
+The intention is that this project can serve as a source for updates and
+compatibility with ongoing changes to the RoboCup Soccer Server. However, no
+promises are made as to the fitness of this software for any purpose
+whatsoever.
+
+The original README from Gregory Kuhlmann and Peter Stone follows. A more
+thorough update might be made at some point.
+
+- Tom Palmer
+
+
+---------------------
+
+
+This package contains the source code for the Keepaway benchmark 
+player framework and the source code for some keepaway utility
+programs.  The framework includes all low- and mid-level keepaway
+behaviors.  A few example high-level policies are included.  Not
+included is any learning code.  However, the framework was designed
+to make it easy to insert your own learning code.  Also, not included
+is the soccer simulator (see REQUIREMENTS).
+
+The framework was created by
+
+ Gregory Kuhlmann
+ and Peter Stone
+
+in the Department of Computer Sciences
+at the University of Texas at Austin:
+http://www.cs.utexas.edu/~AustinVilla/sim/keepaway/
+
+Copyright 2004 Gregory Kuhlmann, Peter Stone
+All Rights Reserved
+
+This package was created as part of our research using
+the keepaway domain.  The following is a list of selected 
+publications:
+
+Keepaway Soccer: From Machine Learning Testbed to Benchmark.
+Peter Stone, Gregory Kuhlmann, Matthew E. Taylor, and Yaxin Liu.
+In Itsuki Noda, Adam Jacoff, Ansgar Bredenfeld, and Yasutake Takahashi, editors, RoboCup-2005: Robot Soccer World Cup IX, Springer Verlag, Berlin, 2006. To appear.
+
+Reinforcement Learning for RoboCup-Soccer Keepaway.
+Peter Stone, Richard S. Sutton, and Gregory Kuhlmann.
+Adaptive Behavior, 2005. 
+
+These and other keepaway papers can be found here:
+http://www.cs.utexas.edu/~pstone/Papers/bib2html/
+
+We ask that you please cite these papers if you publish work that builds
+off of this framework.
+
+The players are built upon version 3.3 of the UvA Basic team that is 
+publicly available from:
+http://staff.science.uva.nl/~jellekok/robocup/2003/index_en.html
+
+The communication code is based on:
+saymsglib - a library to generate and parse messages in the Coachable agent
+communication standard created by Carnegie Mellon University.  It is 
+described here:
+http://www-2.cs.cmu.edu/~robosoccer/simulator/comm_standard.html
+
+We provide this code as-is with no support implied.
+It has been tested under Debian Linux 3.1 (testing)
+
+REQUIREMENTS:
+
+The RoboCup Soccer Server, available from:
+http://sserver.sf.net
+
+The following package versions are strongly recommended:
+  rcssbase    9.4.5
+  rcssserver  9.4.5
+  rcssmonitor 9.3.7
+
+Gnuplot (optional)
+
+
+FILES and DIRECTORIES:
+
+README        - This file
+COPYING       - GNU Public License
+keepaway.sh   - script to start players
+player/       - keepaway player source code    
+logs/         - dir to store generated log files (initially empty)
+weights/      - dir to store learned weights (initially empty)
+tools/        - some useful utilities for keepaway experiments
+
+
+INSTALLATION:
+
+In player/:
+make depend
+make
+
+In tools/:
+make
+(copy all binaries to some directory in your PATH)
+
+
+USAGE:
+
+(Modify "keepaway_dir" in keepaway.sh to match installation dir)
+./keepaway.sh
+
+To view players:
+monitor
+
+To stop:
+killserver
+

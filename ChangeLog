@@ -1,0 +1,27 @@
+0.5 -> 0.6
+	* Greg: Removed research code that was negating state variables
+
+0.4 -> 0.5
+	* Matt: Added option "stop after number of episodes"
+	* Matt: Added option "start learning after number of episodes"
+	* Matt: Fixed problem with view angle and message arrival times that
+	to inconsistent hold times across runs.
+	* Greg: Got rid of "move speed" research code
+	
+0.3 -> 0.4
+	* Greg: Fixed bug in state variable calculation
+	* Greg: Added ability to use a trainer agent, if desired.
+	
+0.2 -> 0.3
+	* Greg: Fixed port bug that prevented multiple instances of 
+	keepaway to be run on the same machine. 
+
+0.1 -> 0.2
+	* Greg: Fixed localization bug that caused players to get confused
+	in unrestricted vision mode.
+	* Greg: Turned on unrestricted vision by default.
+	* Greg: Cleaned up code that had been commented out.
+	* Greg: Changed /bin/tcsh to /bin/csh in scripts to improve 
+	portability.
+
+	

@@ -1,0 +1,27 @@
+kwyzip - Greg Kuhlmann, 2004
+
+This tool compresses and uncompresses .kwy
+files much better than gzip alone.
+
+FILES:
+  kwyzipper.cc  - Main C++ file that does all of the work
+  kzip          - script to compress and gzip multiple files
+  kunzip        - script to gunzip and uncompress multiple files
+  example.kwy   - test file
+
+To make:
+  make
+
+To install:
+  cp kwyzipper kzip kunzip /somewhere/in/your/PATH
+
+To test:
+  cp example.kwy example.backup
+  kzip example.kwy
+  kunzip example.kwy.kz.gz
+  diff example.kwy example.backup
+
+To use:
+  kzip *.kwy
+  kunzip *.kwy.kz.gz
+  

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# KWY file unzipper
+# Gregory Kuhlmann - 2004
+
+for file in $@
+do
+  len=`expr length $file - 3`
+  prefix=`expr substr $file 1 $len`
+  gunzip $file && kwyzipper -x $prefix && rm $prefix
+done
