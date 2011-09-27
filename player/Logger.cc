@@ -49,6 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "Logger.h"
+#include <cstring>
 #include <stdio.h>    // needed for vsprintf
 #include <string>     // needed for string
 #ifdef Solaris

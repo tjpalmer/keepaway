@@ -51,6 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <poll.h>     // poll
   #include <sys/poll.h> // poll
 #endif
+#include <cstring>
 #include <signal.h>     // SIGALARM
 
 ActHandler* ACT; /*!< Pointer to ActHandler class needed by signal handler */

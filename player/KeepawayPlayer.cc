@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "KeepawayPlayer.h"
 #include "Parse.h"
 #include "SayMsgEncoder.h"
+#include <cstring>
 
 extern LoggerDraw LogDraw;
 

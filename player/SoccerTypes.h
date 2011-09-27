@@ -65,7 +65,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MAX_TEAMMATES          11       /*!< Maximum number of teammates     */
 #define MAX_OPPONENTS          11       /*!< Maximum number of opponents     */
-#define MAX_HETERO_PLAYERS      7       /*!< Maximum number of hetero players*/
+#define MAX_HETERO_PLAYERS     18       /*!< Maximum number of hetero players*/
 #define MAX_MSG              4096       /*!< maximum message size from server*/
 #define MAX_SAY_MSG            10       /*!< maximum size of say message     */
 #define MAX_TEAM_NAME_LENGTH   64       /*!< maximum length of teamname      */

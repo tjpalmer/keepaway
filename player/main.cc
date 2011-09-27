@@ -94,7 +94,9 @@ int main( int argc, char * argv[] )
   int      iMinLogLevel                      ;
   int      iMaxLogLevel                      ;
   char     strHost[128]                      = "127.0.0.1";
-  double   dVersion                          = 9.3;
+  // Changes recommended by celibertojr include changing dVersion to 12. See:
+  // https://utlists.utexas.edu/sympa/arc/keepaway/2011-05/msg00006.html
+  double   dVersion                          = 12.0;
   int      iMode                             = 0;
   int      iNr                               = 2;
   int      iReconnect                        = -1;

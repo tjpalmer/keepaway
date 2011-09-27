@@ -1,5 +1,4 @@
-#!/bin/csh
+#!/bin/bash
 
 # Kill server on local machine
-kill -INT `pidof rcssserver`
-
+kill -INT `pidof lt-rcssserver`

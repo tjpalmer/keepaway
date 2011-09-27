@@ -1,0 +1,7 @@
+*.o
+/logs/
+/player/keepaway_player
+/player/Makefile.bak
+/tools/hist
+/tools/kwyzipper
+/tools/winsum

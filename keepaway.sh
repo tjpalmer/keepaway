@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Keepaway startup script
 # 
@@ -9,6 +9,9 @@
 keepaway_dir=`pwd`
 # Top-level rcssjava directory ** SET THIS OPTION **
 rcssjava_dir=~/rcssjava-0.1
+
+export PATH=$keepaway_dir/../rcssmonitor_qt4/src:$PATH
+export PATH=$keepaway_dir/../rcssserver/src:$PATH
 
 ############################################################
 # Keeper options                                           #
@@ -98,7 +101,7 @@ s="server"
 keepaway_opts="$s::keepaway=$keepaway_mode $s::keepaway_start=$sleep_time $s::keepaway_width=$ka_width $s::keepaway_length=$ka_length"
 
 kwy_log_opts="$s::keepaway_logging=$save_kwy_log $s::keepaway_log_dir=$log_dir $s::keepaway_log_fixed=1 $s::keepaway_log_fixed_name=$proc_name"
-rcg_log_opts="$s::game_logging=$save_rcg_log $s::game_log_dir=$log_dir $s::game_log_compression=0 $s::game_log_version=3 $s::game_log_fixed=1 $s::game_log_fixed_name=$proc_name"
+rcg_log_opts="$s::game_logging=$save_rcg_log $s::game_log_dir=$log_dir $s::game_log_compression=0 $s::game_log_version=5 $s::game_log_fixed=1 $s::game_log_fixed_name=$proc_name"
 rcl_log_opts="$s::text_logging=$save_rcl_log $s::text_log_dir=$log_dir $s::text_log_compression=0 $s::text_log_fixed=1 $s::text_log_fixed_name=$proc_name"
 log_opts="$kwy_log_opts $rcg_log_opts $rcl_log_opts"
 
@@ -148,7 +151,7 @@ if (( $save_trainer_log && $use_trainer )); then
 fi
 
 echo Starting Server....
-#echo rcssserver $server_opts
+echo rcssserver $server_opts
 rcssserver $server_opts &
 server_pid=$!
 
@@ -172,7 +175,7 @@ do
   fi
   kcmd_line="./$client $client_opts $keeper_opts $klog_opts $kdraw_opts $kweight_opts"
   echo Starting Keeper \#$i...
-  #echo $kcmd_line
+  echo $kcmd_line
   $kcmd_line &
 done
 
@@ -193,7 +196,7 @@ do
   fi
   tcmd_line="./$client $client_opts $taker_opts $tlog_opts $tdraw_opts $tweight_opts"
   echo Starting Taker \#$i...
-  #echo $tcmd_line
+  echo $tcmd_line
   $tcmd_line &
 done
 
@@ -211,6 +214,7 @@ fi
 if (( $launch_monitor )); then
   monitor_opts="rcssmonitor -m_keepaway 1 -m_keepaway_length $ka_length -m_keepaway_width $ka_width -m_port $port"
   echo Starting Monitor...
+  echo $monitor_opts
   rcssmonitor $monitor_opts &
 fi
 

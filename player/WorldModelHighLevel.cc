@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </pre>
 */
 
+#include <cstring>
 #include<list>            // needed for list<double>
 #include<stdio.h>         // needed for printf
 #include "WorldModel.h"
@@ -1578,7 +1579,7 @@ VecPosition WorldModel::getStrategicPosition( int iPlayer, FormationT ft )
     marking that is required. We distinguish three types of marking: -
     MARK BALL: marking the opponent by standing at a distance 'dDist'
     away from him on the line between him and the ball. This type of
-    marking will make it di±cult for the opponent to receive a pass.
+    marking will make it diï¿½cult for the opponent to receive a pass.
     - MARK GOAL: marking the opponent by standing at a distance
     'dDist' away from him on the line between him and the center point
     of the goal he attacks. This type of marking will make it

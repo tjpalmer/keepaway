@@ -265,7 +265,10 @@ ServerSettings::ServerSettings( ):GenericValues( "ServerSettings", 123 )
   bFullStateR        = false; // fulstate_r, full information right team
   
   // heterogeneous player parameters from player.conf
-  iPlayerTypes              = 7;     // player_types: the number of player type
+  // Changes recommended by celibertojr include changing iPlayerTypes to 18,
+  // although I'm not sure this variable is actually used.
+  // See: https://utlists.utexas.edu/sympa/arc/keepaway/2011-05/msg00006.html
+  iPlayerTypes              = 18;    // player_types: the number of player type
                                      // including the default player type
   iSubsMax                  = 3;     // subs_max: the maximum number of
                                      // substitutions allowed during a game the

@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "LoggerDraw.h"
+#include <cstring>
 
 #define NORM(x) ( ( x < 0 ) ? 0 : ( x > 1 ) ? 1 : x )
 

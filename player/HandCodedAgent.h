@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "SMDPAgent.h"
 #include "WorldModel.h"
+#include <cstdlib>
 
 class HandCodedAgent:public SMDPAgent
 {

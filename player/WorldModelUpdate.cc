@@ -55,6 +55,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Parse.h"
 #include "SayMsgDecoder.h"
 #include "WorldModelSayMsgFactory.h"
+#include <cstdlib>
+#include <cstring>
 #include <stdio.h>      // needed for sprintf
 #include <list>         // needed for list
 
