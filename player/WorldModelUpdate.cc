@@ -555,6 +555,11 @@ bool WorldModel::processNewHeteroPlayer( int iIndex,    double dPlayerSpeedMax,
             double dKickRand,      double dExtraStamina,double dEffortMax,
             double dEffortMin )
 {
+   if (iIndex >= MAX_HETERO_PLAYERS) {
+     cerr << "Hetero index " << iIndex << " >= max " << MAX_HETERO_PLAYERS <<
+         "! Ignoring!" << endl;
+     return false;
+   }
    pt[iIndex].dPlayerSpeedMax  = dPlayerSpeedMax;
    pt[iIndex].dStaminaIncMax   = dStaminaIncMax;
    pt[iIndex].dPlayerDecay     = dPlayerDecay;

@@ -87,7 +87,9 @@ WorldModel::WorldModel( ServerSettings *ss, PlayerSettings *ps,
   strTeamName[0] = '\0';
   setPlayMode     ( PM_BEFORE_KICK_OFF );
   iGoalDiff      = 0;
+  iPlayerNumber = 0;
   m_sidePenalty = SIDE_ILLEGAL;
+  setCommunicationString("");
 
   int i;
   for( i = 0; i < MAX_TEAMMATES ; i ++ )

@@ -95,8 +95,10 @@ SenseHandler::SenseHandler( Connection *c, WorldModel *wm, ServerSettings *ss,
   SS                     = ss;
   PS                     = ps;
   WM                     = wm;
+  m_iSeeCounter = 0;
   iSimStep               = SS->getSimulatorStep()*1000;
   iTimeSignal            = (int)(iSimStep*0.85);
+  iTriCounter = 0;
 
 #ifdef WIN32
   TIMECAPS tc;
@@ -114,6 +116,7 @@ SenseHandler::SenseHandler( Connection *c, WorldModel *wm, ServerSettings *ss,
 
   sigact.sa_flags = SA_RESTART; // do not unblock primitives (like recvfrom)
   sigact.sa_handler = (void (*)(int))sigalarmHandler;
+  sigemptyset(&sigact.sa_mask);
   sigaction( SIGALRM, &sigact, NULL );
 
   // set timer signal to indicate when ActHandler should sent commands to the
