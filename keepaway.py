@@ -10,9 +10,47 @@ def launch_monitor(options):
 
 
 def launch_server(options):
+    from socket import gethostname
+    from subprocess import Popen
+    from time import strftime
+
+    # Some helpful vars.
+    log_name = '%s-%s' % (strftime('%Y%m%d%H%M'), gethostname())
+
     # The server options need to be exactly what goes to the server.
-    # TODO Build them.
     server_options = []
+
+    if options.log_keepaway:
+        server_options.append(['keepaway_logging', 1]);
+        server_options.append(['keepaway_log_dir', options.log_dir]);
+        server_options.append(['keepaway_log_fixed', 1]);
+        server_options.append(['keepaway_log_fixed_name', log_name]);
+
+    if options.log_game:
+        server_options.append(['game_log_dir', options.log_dir]);
+        server_options.append(['game_log_fixed', 1]);
+        server_options.append(['game_log_fixed_name', log_name]);
+    else:
+        server_options.append(['game_logging', 0]);
+
+    server_options.append(['port', options.port]);
+
+    if options.log_text:
+        server_options.append(['text_log_dir', options.log_dir]);
+        server_options.append(['text_log_fixed', 1]);
+        server_options.append(['text_log_fixed_name', log_name]);
+    else:
+        server_options.append(['text_logging', 0]);
+
+    if not options.restricted_vision:
+        server_options.append(['visible_angle', 360])
+    server_options = [
+        'server::%s=%s' % tuple(option) for option in server_options]
+
+    # TODO Locate rcssserver executable reliably.
+    command = ['../rcssserver/src/rcssserver'] + server_options
+    print command
+    Popen(command)
     # TODO Launch.
 
 
