@@ -100,7 +100,7 @@ depend:
 Connection.o: /usr/include/errno.h /usr/include/features.h
 Connection.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 Connection.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-Connection.o: /usr/include/gnu/stubs-64.h /usr/include/bits/errno.h
+Connection.o: /usr/include/gnu/stubs-32.h /usr/include/bits/errno.h
 Connection.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
 Connection.o: /usr/include/asm-generic/errno.h
 Connection.o: /usr/include/asm-generic/errno-base.h /usr/include/string.h
@@ -129,7 +129,7 @@ Connection.o: /usr/include/sys/time.h
 SenseHandler.o: SenseHandler.h Connection.h /usr/include/stdio.h
 SenseHandler.o: /usr/include/features.h /usr/include/bits/predefs.h
 SenseHandler.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-SenseHandler.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+SenseHandler.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 SenseHandler.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 SenseHandler.o: /usr/include/libio.h /usr/include/_G_config.h
 SenseHandler.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -164,7 +164,7 @@ SenseHandler.o: /usr/include/xlocale.h
 ActHandler.o: ActHandler.h Connection.h /usr/include/stdio.h
 ActHandler.o: /usr/include/features.h /usr/include/bits/predefs.h
 ActHandler.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-ActHandler.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+ActHandler.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ActHandler.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 ActHandler.o: /usr/include/libio.h /usr/include/_G_config.h
 ActHandler.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -196,7 +196,7 @@ ActHandler.o: /usr/include/sys/poll.h /usr/include/bits/poll.h
 SoccerTypes.o: /usr/include/stdio.h /usr/include/features.h
 SoccerTypes.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 SoccerTypes.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-SoccerTypes.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+SoccerTypes.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 SoccerTypes.o: /usr/include/bits/typesizes.h /usr/include/libio.h
 SoccerTypes.o: /usr/include/_G_config.h /usr/include/wchar.h
 SoccerTypes.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
@@ -209,7 +209,7 @@ SoccerTypes.o: ServerSettings.h GenericValues.h Parse.h
 Objects.o: Objects.h SoccerTypes.h Geometry.h /usr/include/math.h
 Objects.o: /usr/include/features.h /usr/include/bits/predefs.h
 Objects.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-Objects.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+Objects.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 Objects.o: /usr/include/bits/huge_val.h /usr/include/bits/huge_valf.h
 Objects.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 Objects.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
@@ -225,7 +225,7 @@ Objects.o: /usr/include/alloca.h /usr/include/string.h /usr/include/xlocale.h
 WorldModel.o: /usr/include/stdio.h /usr/include/features.h
 WorldModel.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 WorldModel.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-WorldModel.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+WorldModel.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 WorldModel.o: /usr/include/bits/typesizes.h /usr/include/libio.h
 WorldModel.o: /usr/include/_G_config.h /usr/include/wchar.h
 WorldModel.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
@@ -251,7 +251,7 @@ WorldModel.o: /usr/include/bits/select.h LoggerDraw.h Formations.h
 WorldModelHighLevel.o: /usr/include/stdio.h /usr/include/features.h
 WorldModelHighLevel.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 WorldModelHighLevel.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-WorldModelHighLevel.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+WorldModelHighLevel.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 WorldModelHighLevel.o: /usr/include/bits/typesizes.h /usr/include/libio.h
 WorldModelHighLevel.o: /usr/include/_G_config.h /usr/include/wchar.h
 WorldModelHighLevel.o: /usr/include/bits/stdio_lim.h
@@ -275,7 +275,7 @@ WorldModelHighLevel.o: /usr/include/bits/setjmp.h
 WorldModelPredict.o: /usr/include/stdio.h /usr/include/features.h
 WorldModelPredict.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 WorldModelPredict.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-WorldModelPredict.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+WorldModelPredict.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 WorldModelPredict.o: /usr/include/bits/typesizes.h /usr/include/libio.h
 WorldModelPredict.o: /usr/include/_G_config.h /usr/include/wchar.h
 WorldModelPredict.o: /usr/include/bits/stdio_lim.h
@@ -300,7 +300,7 @@ WorldModelUpdate.o: WorldModel.h Objects.h SoccerTypes.h Geometry.h
 WorldModelUpdate.o: /usr/include/math.h /usr/include/features.h
 WorldModelUpdate.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 WorldModelUpdate.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-WorldModelUpdate.o: /usr/include/gnu/stubs-64.h /usr/include/bits/huge_val.h
+WorldModelUpdate.o: /usr/include/gnu/stubs-32.h /usr/include/bits/huge_val.h
 WorldModelUpdate.o: /usr/include/bits/huge_valf.h
 WorldModelUpdate.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 WorldModelUpdate.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
@@ -329,7 +329,7 @@ WorldModelUpdate.o: /usr/include/bits/confname.h /usr/include/getopt.h
 WorldModelKeepaway.o: /usr/include/assert.h /usr/include/features.h
 WorldModelKeepaway.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 WorldModelKeepaway.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-WorldModelKeepaway.o: /usr/include/gnu/stubs-64.h WorldModel.h Objects.h
+WorldModelKeepaway.o: /usr/include/gnu/stubs-32.h WorldModel.h Objects.h
 WorldModelKeepaway.o: SoccerTypes.h Geometry.h /usr/include/math.h
 WorldModelKeepaway.o: /usr/include/bits/huge_val.h
 WorldModelKeepaway.o: /usr/include/bits/huge_valf.h
@@ -352,7 +352,7 @@ WorldModelSayMsgTypes.o: SoccerTypes.h Geometry.h /usr/include/math.h
 WorldModelSayMsgTypes.o: /usr/include/features.h /usr/include/bits/predefs.h
 WorldModelSayMsgTypes.o: /usr/include/sys/cdefs.h
 WorldModelSayMsgTypes.o: /usr/include/bits/wordsize.h
-WorldModelSayMsgTypes.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+WorldModelSayMsgTypes.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 WorldModelSayMsgTypes.o: /usr/include/bits/huge_val.h
 WorldModelSayMsgTypes.o: /usr/include/bits/huge_valf.h
 WorldModelSayMsgTypes.o: /usr/include/bits/huge_vall.h
@@ -379,7 +379,7 @@ WorldModelSayMsgTypes.o: SayMsgDataTypes.h /usr/include/assert.h
 ServerSettings.o: ServerSettings.h Geometry.h /usr/include/math.h
 ServerSettings.o: /usr/include/features.h /usr/include/bits/predefs.h
 ServerSettings.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-ServerSettings.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+ServerSettings.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 ServerSettings.o: /usr/include/bits/huge_val.h /usr/include/bits/huge_valf.h
 ServerSettings.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 ServerSettings.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
@@ -394,7 +394,7 @@ PlayerSettings.o: PlayerSettings.h GenericValues.h
 GenericValues.o: GenericValues.h Parse.h /usr/include/stdio.h
 GenericValues.o: /usr/include/features.h /usr/include/bits/predefs.h
 GenericValues.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-GenericValues.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+GenericValues.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 GenericValues.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 GenericValues.o: /usr/include/libio.h /usr/include/_G_config.h
 GenericValues.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -410,7 +410,7 @@ GenericValues.o: /usr/include/ctype.h
 Formations.o: Formations.h SoccerTypes.h Geometry.h /usr/include/math.h
 Formations.o: /usr/include/features.h /usr/include/bits/predefs.h
 Formations.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-Formations.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+Formations.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 Formations.o: /usr/include/bits/huge_val.h /usr/include/bits/huge_valf.h
 Formations.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 Formations.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
@@ -422,7 +422,7 @@ Formations.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
 Geometry.o: Geometry.h /usr/include/math.h /usr/include/features.h
 Geometry.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 Geometry.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-Geometry.o: /usr/include/gnu/stubs-64.h /usr/include/bits/huge_val.h
+Geometry.o: /usr/include/gnu/stubs-32.h /usr/include/bits/huge_val.h
 Geometry.o: /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h
 Geometry.o: /usr/include/bits/inf.h /usr/include/bits/nan.h
 Geometry.o: /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h
@@ -433,7 +433,7 @@ Geometry.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
 Parse.o: Parse.h /usr/include/ctype.h /usr/include/features.h
 Parse.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 Parse.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-Parse.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+Parse.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 Parse.o: /usr/include/bits/typesizes.h /usr/include/endian.h
 Parse.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
 Parse.o: /usr/include/xlocale.h /usr/include/math.h
@@ -444,7 +444,7 @@ Parse.o: /usr/include/bits/mathcalls.h /usr/include/string.h
 Logger.o: Logger.h /usr/include/sys/time.h /usr/include/features.h
 Logger.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 Logger.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-Logger.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+Logger.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 Logger.o: /usr/include/bits/typesizes.h /usr/include/time.h
 Logger.o: /usr/include/bits/time.h /usr/include/sys/select.h
 Logger.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
@@ -458,7 +458,7 @@ Logger.o: /usr/include/bits/pthreadtypes.h /usr/include/bits/setjmp.h
 LoggerDraw.o: LoggerDraw.h SoccerTypes.h Geometry.h /usr/include/math.h
 LoggerDraw.o: /usr/include/features.h /usr/include/bits/predefs.h
 LoggerDraw.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-LoggerDraw.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+LoggerDraw.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 LoggerDraw.o: /usr/include/bits/huge_val.h /usr/include/bits/huge_valf.h
 LoggerDraw.o: /usr/include/bits/huge_vall.h /usr/include/bits/inf.h
 LoggerDraw.o: /usr/include/bits/nan.h /usr/include/bits/mathdef.h
@@ -466,7 +466,7 @@ LoggerDraw.o: /usr/include/bits/mathcalls.h ServerSettings.h GenericValues.h
 BasicPlayer.o: BasicPlayer.h ActHandler.h Connection.h /usr/include/stdio.h
 BasicPlayer.o: /usr/include/features.h /usr/include/bits/predefs.h
 BasicPlayer.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-BasicPlayer.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+BasicPlayer.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 BasicPlayer.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 BasicPlayer.o: /usr/include/libio.h /usr/include/_G_config.h
 BasicPlayer.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
@@ -498,7 +498,7 @@ KeepawayPlayer.o: KeepawayPlayer.h BasicPlayer.h ActHandler.h Connection.h
 KeepawayPlayer.o: /usr/include/stdio.h /usr/include/features.h
 KeepawayPlayer.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 KeepawayPlayer.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-KeepawayPlayer.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+KeepawayPlayer.o: /usr/include/gnu/stubs-32.h /usr/include/bits/types.h
 KeepawayPlayer.o: /usr/include/bits/typesizes.h /usr/include/libio.h
 KeepawayPlayer.o: /usr/include/_G_config.h /usr/include/wchar.h
 KeepawayPlayer.o: /usr/include/bits/stdio_lim.h
@@ -533,7 +533,7 @@ KeepawayPlayer.o: /usr/include/assert.h
 HandCodedAgent.o: /usr/include/string.h /usr/include/features.h
 HandCodedAgent.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 HandCodedAgent.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
-HandCodedAgent.o: /usr/include/gnu/stubs-64.h /usr/include/xlocale.h
+HandCodedAgent.o: /usr/include/gnu/stubs-32.h /usr/include/xlocale.h
 HandCodedAgent.o: /usr/include/stdlib.h /usr/include/sys/types.h
 HandCodedAgent.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 HandCodedAgent.o: /usr/include/time.h /usr/include/endian.h
@@ -556,7 +556,7 @@ HandCodedAgent.o: /usr/include/bits/setjmp.h
 main.o: SenseHandler.h Connection.h /usr/include/stdio.h
 main.o: /usr/include/features.h /usr/include/bits/predefs.h
 main.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-main.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+main.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
 main.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
 main.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
 main.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
