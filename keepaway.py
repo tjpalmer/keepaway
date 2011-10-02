@@ -19,6 +19,10 @@ def launch_server(options):
 
     # The server options need to be exactly what goes to the server.
     server_options = []
+    
+    # TODO No keepaway if doing coach instead?
+    server_options.append(['keepaway', 1])
+    server_options.append(['keepaway_start', options.game_start])
 
     if options.log_keepaway:
         server_options.append(['keepaway_logging', 1]);
