@@ -22,7 +22,9 @@ def launch_server(options):
     server_options = []
 
     # Coach/trainer mode.
-    server_options += [('coach', int(options.coach))]
+    server_options += [
+        ('coach', int(options.coach)),
+        ('coach_port', options.coach_port)]
 
     # Hardcoded settings for keepaway play.
     server_options += [('forbid_kick_off_offside', 0)]
@@ -51,8 +53,10 @@ def launch_server(options):
     else:
         server_options += [('game_logging', 0)];
 
-    # Server port!
-    server_options += [('port', options.port)];
+    # Server and online coach ports.
+    server_options += [
+        ('olcoach_port', options.online_coach_port),
+        ('port', options.port)];
 
     # Hardcoded stamina inc. This was hardcoded in keepaway.sh.
     # TODO What's the effect, and what's default?
@@ -86,12 +90,13 @@ def launch_server(options):
     server_options = [
         'server::%s=%s' % option for option in server_options]
 
+    # Build rcssserver command, and fork it off.
     # TODO Locate rcssserver executable reliably.
     command = ['../rcssserver/src/rcssserver'] + server_options
     print command
     Popen(command)
 
-    # TODO Wait until ready.
+    # Wait until the server is ready.
     wait_for_server(options.port)
 
 
@@ -175,9 +180,32 @@ def parse_options():
 
 
 def wait_for_server(port):
-    from socket import socket
-    #sock = socket()
-    #sock.connect(('127.0.0.1', port))
+    """Impersonate a monitor to see if the server is running yet."""
+    from socket import AF_INET, SOCK_DGRAM, socket
+    from time import sleep
+    sock = socket(AF_INET, SOCK_DGRAM)
+    try:
+        sock.setblocking(False)
+        sock.bind(('', 0))
+        # Loop until successful.
+        while True:
+            # Delay a bit between attempts, so we don't bother the server nor
+            # the user console.
+            sleep(0.25)
+            try:
+                sock.sendto(
+                    '(dispinit version 4)', ('127.0.0.1', port))
+                # Sample rcssclient uses buffer size 8192.
+                # TODO Do I care to validate these? data, sender =
+                sock.recvfrom(8192)
+                sock.sendto('(dispbye)', ('127.0.0.1', port))
+                # Good to go.
+                break
+            except:
+                # TODO Check to make sure it's the right kind of error?
+                pass
+    finally:
+        sock.close()
 
 
 if __name__ == '__main__':
