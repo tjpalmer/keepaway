@@ -2,6 +2,7 @@
 
 
 def launch_keeper(options, i):
+    # ./keepaway_player -p 5800 -k 3 -j 2 -x -1 -y -1 -t keepers -e 0 -q rand
     pass
 
 
@@ -17,48 +18,85 @@ def launch_server(options):
     # Some helpful vars.
     log_name = '%s-%s' % (strftime('%Y%m%d%H%M'), gethostname())
 
-    # The server options need to be exactly what goes to the server.
+    # Build up the server arguments. Alphabetical order follows.
     server_options = []
+
+    # Coach/trainer mode.
+    server_options += [('coach', int(options.coach))]
+
+    # Hardcoded settings for keepaway play.
+    server_options += [('forbid_kick_off_offside', 0)]
+    server_options += [('half_time', -1)]
     
-    # TODO No keepaway if doing coach instead?
-    server_options.append(['keepaway', 1])
-    server_options.append(['keepaway_start', options.game_start])
+    # Either keepaway or trainer mode.
+    server_options += [('keepaway', int(not options.coach))]
+    server_options += [('keepaway_start', options.game_start)]
 
     if options.log_keepaway:
-        server_options.append(['keepaway_logging', 1]);
-        server_options.append(['keepaway_log_dir', options.log_dir]);
-        server_options.append(['keepaway_log_fixed', 1]);
-        server_options.append(['keepaway_log_fixed_name', log_name]);
+        server_options += [
+            ('keepaway_logging', 1),
+            ('keepaway_log_dir', options.log_dir),
+            ('keepaway_log_fixed', 1),
+            ('keepaway_log_fixed_name', log_name)];
 
     if options.log_game:
-        server_options.append(['game_log_dir', options.log_dir]);
-        server_options.append(['game_log_fixed', 1]);
-        server_options.append(['game_log_fixed_name', log_name]);
+        server_options += [
+            # TODO Parameterize compression?
+            ('game_log_compression', 0),
+            ('game_log_dir', options.log_dir),
+            ('game_log_fixed', 1),
+            ('game_log_fixed_name', log_name),
+            # TODO Parameterize the version number?
+            ('game_log_version', 5)];
     else:
-        server_options.append(['game_logging', 0]);
+        server_options += [('game_logging', 0)];
 
-    server_options.append(['port', options.port]);
+    # Server port!
+    server_options += [('port', options.port)];
+
+    # Hardcoded stamina inc. This was hardcoded in keepaway.sh.
+    # TODO What's the effect, and what's default?
+    # TODO Any changes to other new defaults in rcssserver to retain benchmarks?
+    server_options += [('stamina_inc_max', 3500)];
+
+    # Synch mode. TODO What's default, and does synch offset matter when not
+    # TODO in synch mode?
+    server_options += [
+        ('synch_mode', int(options.synch_mode)),
+        # Synch offset 80 was hardcoded in keepaway.sh.
+        ('synch_offset', 80)]
 
     if options.log_text:
-        server_options.append(['text_log_dir', options.log_dir]);
-        server_options.append(['text_log_fixed', 1]);
-        server_options.append(['text_log_fixed_name', log_name]);
+        server_options += [
+            # TODO Parameterize compression?
+            ('text_log_compression', 0),
+            ('text_log_dir', options.log_dir),
+            ('text_log_fixed', 1),
+            ('text_log_fixed_name', log_name)];
     else:
-        server_options.append(['text_logging', 0]);
+        server_options += [('text_logging', 0)];
 
+    # More hardcoded settings for keepaway play.
+    server_options += [('use_offside', 0)]
+
+    # Vision limits. TODO What's the normal default?
     if not options.restricted_vision:
-        server_options.append(['visible_angle', 360])
+        server_options += [('visible_angle', 360)]
+
     server_options = [
-        'server::%s=%s' % tuple(option) for option in server_options]
+        'server::%s=%s' % option for option in server_options]
 
     # TODO Locate rcssserver executable reliably.
     command = ['../rcssserver/src/rcssserver'] + server_options
     print command
     Popen(command)
-    # TODO Launch.
+
+    # TODO Wait until ready.
+    wait_for_server(options.port)
 
 
 def launch_taker(options, i):
+    # ./keepaway_player -p 5800 -k 3 -j 2 -x -1 -y -1 -t takers -e 0 -q hand
     pass
 
 
@@ -83,6 +121,10 @@ def parse_options():
     default_port = 5800
     default_size = 20
     parser.add_option(
+        '--coach', action = 'store_true', default = False,
+        help = "Use trainer instead of server referee.")
+    parser.add_option(
+        # TODO More options are needed before coach/trainer is ready.
         '--coach-port', type = 'int', default = default_port + 1,
         help = "Offline trainer port.")
     parser.add_option(
@@ -132,27 +174,10 @@ def parse_options():
     return options
 
 
-#rcssserver
-#server::half_time=-1
-#server::forbid_kick_off_offside=0
-#server::use_offside=0
-#server::stamina_inc_max=3500
-#server::synch_offset=80
-#server::keepaway=1
-#server::keepaway_log_dir=/home/tom/Workspace/keepaway/logs
-#server::keepaway_log_fixed=1
-#server::keepaway_log_fixed_name=201110011426-tom-mini9
-#server::game_log_dir=/home/tom/Workspace/keepaway/logs
-#server::game_log_compression=0
-#server::game_log_version=5
-#server::game_log_fixed=1
-#server::game_log_fixed_name=201110011426-tom-mini9
-#server::text_log_dir=/home/tom/Workspace/keepaway/logs
-#server::text_log_compression=0
-#server::text_log_fixed=1
-#server::text_log_fixed_name=201110011426-tom-mini9
-#server::visible_angle=360
-#server::coach=0
+def wait_for_server(port):
+    from socket import socket
+    #sock = socket()
+    #sock.connect(('127.0.0.1', port))
 
 
 if __name__ == '__main__':
