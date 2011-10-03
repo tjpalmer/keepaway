@@ -1,9 +1,35 @@
 #!/usr/bin/env python
 
 
-def launch_keeper(options, i):
-    # ./keepaway_player -p 5800 -k 3 -j 2 -x -1 -y -1 -t keepers -e 0 -q rand
-    pass
+def launch_player(player_type, options):
+    """Launcher for both keepers and takers."""
+    from itertools import chain
+    from subprocess import Popen
+
+    # Build up the options for the player process.
+    # TODO $klog_opts $kdraw_opts $kweight_opts
+    player_options = dict(
+        e = int(getattr(options, player_type + '_learn')),
+        j = options.taker_count,
+        k = options.keeper_count,
+        p = options.port,
+        q = getattr(options, player_type + '_policy'),
+        t = player_type + 's', # Pluralize for team name. TODO Really?
+        x = options.stop_after,
+        y = options.start_learning_after)
+
+    # Change the dict to a sorted list of args.
+    player_options = player_options.items()
+    player_options.sort()
+    player_options = [
+        ('-%s' % option[0], str(option[1])) for option in player_options]
+    player_options = list(chain(*player_options))
+
+    # Build keepaway_player command, and fork it off.
+    # TODO Locate rcssserver executable reliably.
+    command = ['./player/keepaway_player'] + player_options
+    print command
+    Popen(command)
 
 
 def launch_monitor(options):
@@ -100,11 +126,6 @@ def launch_server(options):
     wait_for_server(options.port)
 
 
-def launch_taker(options, i):
-    # ./keepaway_player -p 5800 -k 3 -j 2 -x -1 -y -1 -t takers -e 0 -q hand
-    pass
-
-
 def main():
     options = parse_options()
     print options
@@ -112,9 +133,9 @@ def main():
     launch_server(options)
     # Then players.
     for i in xrange(options.keeper_count):
-        launch_keeper(options, i)
+        launch_player('keeper', options)
     for i in xrange(options.taker_count):
-        launch_taker(options, i)
+        launch_player('taker', options)
     # Then monitor.
     if options.monitor:
         launch_monitor(options)
@@ -145,6 +166,13 @@ def parse_options():
         '--keeper-count', type = 'int', default = 3,
         help = "Number of keepers.")
     parser.add_option(
+        '--keeper-learn', action = 'store_true', default = False,
+        help = "Turn learning on for keepers.")
+    parser.add_option(
+        '--keeper-policy', type = 'choice', default = 'rand',
+        choices = ['hand', 'hold', 'learned', 'rand'],
+        help = "The policy for the keepers to follow.")
+    parser.add_option(
         '--log-dir', default = "./logs",
         help = "Directory for storing log files.")
     parser.add_option(
@@ -170,11 +198,24 @@ def parse_options():
         '--restricted-vision', action = 'store_true', default = False,
         help = "Restrict player vision to less than 360 degrees.")
     parser.add_option(
+        '--start-learning-after', type = 'int', default = -1,
+        help = "Start learning after the given number of episodes.")
+    parser.add_option(
+        '--stop-after', type = 'int', default = -1,
+        help = "Stop play after the given number of episodes.")
+    parser.add_option(
         '--synch-mode', action = 'store_true', default = False,
         help = "Speed up with synchronous mode.")
     parser.add_option(
         '--taker-count', type = 'int', default = 2,
         help = "Number of takers.")
+    parser.add_option(
+        '--taker-learn', action = 'store_true', default = False,
+        help = "Turn learning on for takers.")
+    parser.add_option(
+        '--taker-policy', type = 'choice', default = 'hand',
+        choices = ['hand', 'learned'],
+        help = "The policy for the takers to follow.")
     options = parser.parse_args()[0]
     return options
 
