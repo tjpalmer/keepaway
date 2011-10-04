@@ -134,13 +134,18 @@ def launch_server(options):
 
 
 def main():
+    from time import sleep
     options = parse_options()
     # print options
     # Kick off server.
     launch_server(options)
-    # Then players.
+    # Then keepers.
     for i in xrange(options.keeper_count):
         launch_player('keeper', options)
+    # Then takers, after sleeping to make sure keepers are team 0.
+    # TODO Watch for players instead of sleeping?
+    # TODO If so, also use 'dispstart' command to start play once all on.
+    sleep(1)
     for i in xrange(options.taker_count):
         launch_player('taker', options)
     # Then monitor.
