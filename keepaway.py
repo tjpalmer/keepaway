@@ -28,12 +28,19 @@ def launch_player(player_type, options):
     # Build keepaway_player command, and fork it off.
     # TODO Locate rcssserver executable reliably.
     command = ['./player/keepaway_player'] + player_options
-    print command
+    # print command
     Popen(command)
 
 
 def launch_monitor(options):
-    pass
+    from subprocess import Popen
+    # I can't find any way to zoom automatically on startup. Oh well.
+    monitor_options = [('server-port', options.port)]
+    monitor_options = [
+        '--%s=%s' % option for option in monitor_options]
+    command = ['../rcssmonitor_qt4/src/rcssmonitor'] + monitor_options
+    # print command
+    Popen(command)
 
 
 def launch_server(options):
@@ -119,7 +126,7 @@ def launch_server(options):
     # Build rcssserver command, and fork it off.
     # TODO Locate rcssserver executable reliably.
     command = ['../rcssserver/src/rcssserver'] + server_options
-    print command
+    # print command
     Popen(command)
 
     # Wait until the server is ready.
@@ -128,7 +135,7 @@ def launch_server(options):
 
 def main():
     options = parse_options()
-    print options
+    # print options
     # Kick off server.
     launch_server(options)
     # Then players.
