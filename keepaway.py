@@ -63,9 +63,12 @@ def launch_server(options):
     server_options += [('forbid_kick_off_offside', 0)]
     server_options += [('half_time', -1)]
     
-    # Either keepaway or trainer mode.
+    # Either keepaway or trainer mode. Field size.
     server_options += [('keepaway', int(not options.coach))]
     server_options += [('keepaway_start', options.game_start)]
+    server_options += [
+        ('keepaway_length', options.field_length),
+        ('keepaway_width', options.field_width)]
 
     if options.log_keepaway:
         server_options += [
