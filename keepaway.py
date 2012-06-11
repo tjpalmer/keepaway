@@ -29,6 +29,7 @@ def launch_player(player_type, options):
     # TODO Locate rcssserver executable reliably.
     command = ['./player/keepaway_player'] + player_options
     # print command
+    # print " ".join(command)
     Popen(command)
 
 
@@ -40,6 +41,7 @@ def launch_monitor(options):
         '--%s=%s' % option for option in monitor_options]
     command = ['../rcssmonitor_qt4/src/rcssmonitor'] + monitor_options
     # print command
+    # print " ".join(command)
     Popen(command)
 
 
@@ -130,6 +132,7 @@ def launch_server(options):
     # TODO Locate rcssserver executable reliably.
     command = ['../rcssserver/src/rcssserver'] + server_options
     # print command
+    # print " ".join(command)
     Popen(command)
 
     # Wait until the server is ready.
