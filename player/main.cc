@@ -63,6 +63,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef WIN32
 #include <windows.h>  // needed for CreateThread
 #else
+#include <dlfcn.h>    // needed for extension loading.
 #include <pthread.h>  // needed for pthread_create
 #endif
 #include <stdlib.h>   // needed for exit
@@ -283,13 +284,42 @@ int main( int argc, char * argv[] )
     // (l)earned
 //     sa = new LearningAgent( numFeatures, numActions,
 //                          bLearn, loadWeightsFile, saveWeightsFile ); 
-  }
-  else {
+  } else if (!strncmp(strPolicy, "ext=", 4)) {
+    // Load extension.
+    // Name should come after "ext=". Yes, this is hackish.
+    char* extensionName = strPolicy + 4;
+    typedef SMDPAgent* (*CreateAgent)(int, int, bool, char*, char*);
+    CreateAgent createAgent = NULL;
+#ifdef WIN32
+    // TODO
+#else
+    void* extension = dlopen(extensionName, RTLD_LAZY);
+    if (extension) {
+      createAgent =
+        reinterpret_cast<CreateAgent>(dlsym(extension, "createAgent"));
+    }
+#endif
+    if (!extension) {
+      cerr << "Failed to load extension " << extensionName << endl;
+      return EXIT_FAILURE;
+    }
+    if (!createAgent) {
+      cerr << "Failed to find createAgent in " << extensionName << endl;
+      return EXIT_FAILURE;
+    }
+    sa = createAgent(
+      numFeatures, numActions, bLearn, loadWeightsFile, saveWeightsFile
+    );
+  } else {
     // (ha)nd (ho)ld (r)andom
     sa = new HandCodedAgent( numFeatures, numActions,
 			     strPolicy, &wm );
   }
 
+  if (!sa) {
+    cerr << "No agent!" << endl;
+    return EXIT_FAILURE;
+  }
   KeepawayPlayer bp( sa, &a, &wm, &ss, &cs, strTeamName, 
 		     iNumKeepers, iNumTakers, dVersion, iReconnect );
 

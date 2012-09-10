@@ -187,8 +187,11 @@ def parse_options():
         '--keeper-learn', action = 'store_true', default = False,
         help = "Turn learning on for keepers.")
     parser.add_option(
-        '--keeper-policy', type = 'choice', default = 'rand',
-        choices = ['hand', 'hold', 'learned', 'rand'],
+        '--keeper-policy',
+        # Allow --keeper-policy=ext=./whatever.so, so remove choices.
+        # TODO Nicer syntax for extensions?
+        #type = 'choice', choices = ['hand', 'hold', 'learned', 'rand'],
+        default = 'rand',
         help = "The policy for the keepers to follow.")
     parser.add_option(
         '--log-dir', default = "./logs",
@@ -231,8 +234,10 @@ def parse_options():
         '--taker-learn', action = 'store_true', default = False,
         help = "Turn learning on for takers.")
     parser.add_option(
-        '--taker-policy', type = 'choice', default = 'hand',
-        choices = ['hand', 'learned'],
+        '--taker-policy', default = 'hand',
+        # Allow --keeper-policy=ext=./whatever.so, so remove choices.
+        # TODO Nicer syntax for extensions?
+        #type = 'choice', choices = ['hand', 'learned'],
         help = "The policy for the takers to follow.")
     options = parser.parse_args()[0]
     return options
