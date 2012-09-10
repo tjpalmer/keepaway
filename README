@@ -10,9 +10,12 @@ whatsoever.
 I have also modified the launch scripts to expect working with in-place builds
 of rcss tools rather than system installed ones. The latter might still work,
 but I haven't checked on that. I expect sibling dirs to keepaway called
-rcssmonitor_qt4 and rcssserver. (Caveat: I haven't actually yet updated the
-keepaway.sh script to support the monitor, but if you start it manually pointing
-to port 5800, it will show the action.)
+rcssmonitor_qt4 and rcssserver. Use the keepaway.py launch script for most
+convenience. I haven't done much to maintain the original keepaway.sh. As an
+example, to kick off with default settings and see the action, run like so (if
+your system has python and knows shebangs):
+
+  ./keepaway.py --monitor
 
 The original README from Gregory Kuhlmann and Peter Stone follows. A more
 thorough update might be made at some point.
