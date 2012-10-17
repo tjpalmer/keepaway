@@ -27,7 +27,7 @@ CFLAGS_OPT     	= #-O3 #-static
 CFLAGS_WARN     = -Wall
 
 OSFLAGS_SunOS_5 = -DSolaris 
-OSFLAGS_linux   = -Dlinux 
+OSFLAGS_linux   = -Dlinux -rdynamic
 
 CLIBS_SunOS_5   = 
 CLIBS_linux     =
@@ -75,15 +75,17 @@ OBJS_PLAYER	= $(SRCS_PLAYER:.cc=.o)
 
 # ==== RULES ==================================================
 
-all::	$(TARGET) demo_extension
+all::	$(TARGET) demo_extension demo_relational_extension
 
 .cc.o:
 	$(COMPILE) -c -o $@ $(@F:%.o=%.cc)
 
-# TODO Windows and Mac versions of this.
+# TODO Windows and Mac versions of these.
 # TODO Convert the whole build to CMake?
 demo_extension: DemoExtension.cc
 	$(COMPILE) -fPIC -shared -o demo_extension.so DemoExtension.cc
+demo_relational_extension: DemoRelationalExtension.cc
+	$(COMPILE) -fPIC -shared -o demo_relational_extension.so DemoRelationalExtension.cc
 
 keepaway_player: $(OBJS_PLAYER)  
 	$(COMPILE) -o  $@ $(OBJS_PLAYER) ${CFLAGS_LIBS}

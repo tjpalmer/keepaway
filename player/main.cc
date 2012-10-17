@@ -288,6 +288,9 @@ int main( int argc, char * argv[] )
     // Load extension.
     // Name should come after "ext=". Yes, this is hackish.
     char* extensionName = strPolicy + 4;
+    // These parameters are based on the expected learning agent parameters
+    // above.
+    // TODO Add anything such as player ID?
     typedef SMDPAgent* (*CreateAgent)(int, int, bool, char*, char*);
     CreateAgent createAgent = NULL;
 #ifdef WIN32
