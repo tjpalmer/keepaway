@@ -1,4 +1,5 @@
 #include "SMDPAgent.h"
+#include "WorldModel.h"
 #include <iostream>
 
 
@@ -7,12 +8,14 @@ namespace keepaway_demo {
 class DemoAgent: public virtual SMDPAgent {
 public:
 
-  DemoAgent(int numFeatures, int numActions);
+  DemoAgent(WorldModel& world, int numFeatures, int numActions);
 
   virtual int startEpisode(double state[]);
   virtual int step(double reward, double state[]);
   virtual void endEpisode(double reward);
   virtual void setParams(int iCutoffEpisodes, int iStopLearningEpisodes);
+
+  WorldModel& world;
 };
 
 }
@@ -25,10 +28,11 @@ using namespace std;
 extern "C" {
 
 SMDPAgent* createAgent(
+  WorldModel& world,
   int numFeatures, int numActions, bool learning,
   char* inputFile, char* outputFile
 ) {
-  DemoAgent* agent = new DemoAgent(numFeatures, numActions);
+  DemoAgent* agent = new DemoAgent(world, numFeatures, numActions);
   return agent;
 }
 
@@ -38,10 +42,11 @@ SMDPAgent* createAgent(
 namespace keepaway_demo {
 
 
-DemoAgent::DemoAgent(int numFeatures, int numActions):
-  SMDPAgent(numFeatures, numActions)
+DemoAgent::DemoAgent(WorldModel& world_, int numFeatures, int numActions):
+  SMDPAgent(numFeatures, numActions), world(world_)
 {
-  cout << "DemoAgent(" << numFeatures << ", " << numActions << ")" << endl;
+  cout
+    << "DemoAgent(world, " << numFeatures << ", " << numActions << ")" << endl;
 }
 
 
@@ -54,8 +59,11 @@ int DemoAgent::startEpisode(double state[]) {
 
 
 int DemoAgent::step(double reward, double state[]) {
-  // TODO Print state!
-  cout << "step(" << reward << ", ...)" << endl;
+  VecPosition position = world.getGlobalPosition(
+    SoccerTypes::getTeammateObjectFromIndex(world.getAgentIndex())
+  );
+  // Just prove we have live info.
+  cout << "step(" << reward << ", ...) at " << position << endl;
   // Always a hold action here.
   return 0;
 }

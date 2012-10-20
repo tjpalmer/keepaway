@@ -290,8 +290,10 @@ int main( int argc, char * argv[] )
     char* extensionName = strPolicy + 4;
     // These parameters are based on the expected learning agent parameters
     // above.
-    // TODO Add anything such as player ID?
-    typedef SMDPAgent* (*CreateAgent)(int, int, bool, char*, char*);
+    // Added WorldModel for agent's needing richer/relational representation!
+    typedef SMDPAgent* (*CreateAgent)(
+      WorldModel&, int, int, bool, char*, char*
+    );
     CreateAgent createAgent = NULL;
 #ifdef WIN32
     // TODO
@@ -311,7 +313,7 @@ int main( int argc, char * argv[] )
       return EXIT_FAILURE;
     }
     sa = createAgent(
-      numFeatures, numActions, bLearn, loadWeightsFile, saveWeightsFile
+      wm, numFeatures, numActions, bLearn, loadWeightsFile, saveWeightsFile
     );
   } else {
     // (ha)nd (ho)ld (r)andom
