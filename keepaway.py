@@ -10,13 +10,15 @@ def launch_player(player_type, options):
     # TODO $klog_opts $kdraw_opts $kweight_opts
     player_options = dict(
         e = int(getattr(options, player_type + '_learn')),
+        f = getattr(options, player_type + '_output'),
         j = options.taker_count,
         k = options.keeper_count,
         p = options.port,
         q = getattr(options, player_type + '_policy'),
         t = player_type + 's', # Pluralize for team name. TODO Really?
         x = options.stop_after,
-        y = options.start_learning_after)
+        y = options.start_learning_after,
+        w = getattr(options, player_type + '_input'))
 
     # Change the dict to a sorted list of args.
     player_options = player_options.items()
@@ -184,8 +186,14 @@ def parse_options():
         '--keeper-count', type = 'int', default = 3,
         help = "Number of keepers.")
     parser.add_option(
+        '--keeper-input',
+        help = "Input (file) name for keeper policy agent.")
+    parser.add_option(
         '--keeper-learn', action = 'store_true', default = False,
         help = "Turn learning on for keepers.")
+    parser.add_option(
+        '--keeper-output',
+        help = "Output (file) name for keeper policy agent.")
     parser.add_option(
         '--keeper-policy',
         # Allow --keeper-policy=ext=./whatever.so, so remove choices.
@@ -231,8 +239,14 @@ def parse_options():
         '--taker-count', type = 'int', default = 2,
         help = "Number of takers.")
     parser.add_option(
+        '--taker-input',
+        help = "Input (file) name for taker policy agent.")
+    parser.add_option(
         '--taker-learn', action = 'store_true', default = False,
         help = "Turn learning on for takers.")
+    parser.add_option(
+        '--taker-output',
+        help = "Output (file) name for taker policy agent.")
     parser.add_option(
         '--taker-policy', default = 'hand',
         # Allow --keeper-policy=ext=./whatever.so, so remove choices.
