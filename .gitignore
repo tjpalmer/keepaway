@@ -1,4 +1,5 @@
 *.o
+*.pyc
 /logs/
 /player/demo_extension.so
 /player/keepaway_player

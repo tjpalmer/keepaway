@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 
 
+class Any:
+    """
+    Just an easy go-to class for arbitrary data.
+    """
+
+    def __init__(self, **args):
+        if args:
+            self.__dict__.update(args)
+
+
 def launch_player(player_type, options):
     """Launcher for both keepers and takers."""
     from itertools import chain
@@ -29,7 +39,7 @@ def launch_player(player_type, options):
 
     # Build keepaway_player command, and fork it off.
     # TODO Locate rcssserver executable reliably.
-    command = ['./player/keepaway_player'] + player_options
+    command = [relative('./player/keepaway_player')] + player_options
     # print command
     # print " ".join(command)
     Popen(command)
@@ -41,13 +51,17 @@ def launch_monitor(options):
     monitor_options = [('server-port', options.port)]
     monitor_options = [
         '--%s=%s' % option for option in monitor_options]
-    command = ['../rcssmonitor_qt4/src/rcssmonitor'] + monitor_options
+    command = [relative('../rcssmonitor_qt4/src/rcssmonitor')] + monitor_options
     # print command
     # print " ".join(command)
     Popen(command)
 
 
 def launch_server(options):
+    """
+    Launches the server.
+    Returns its process id.
+    """
     from socket import gethostname
     from subprocess import Popen
     from time import strftime
@@ -132,46 +146,40 @@ def launch_server(options):
 
     # Build rcssserver command, and fork it off.
     # TODO Locate rcssserver executable reliably.
-    command = ['../rcssserver/src/rcssserver'] + server_options
+    command = [relative('../rcssserver/src/rcssserver')] + server_options
     # print command
     # print " ".join(command)
-    Popen(command)
+    popen = Popen(command)
 
     # Wait until the server is ready.
     wait_for_server(options.port)
+    return popen.pid
 
 
 def main():
-    from time import sleep
+    """
+    Just parses shell options and kicks things off.
+    """
     options = parse_options()
-    # print options
-    # Kick off server.
-    launch_server(options)
-    # Then keepers.
-    for i in xrange(options.keeper_count):
-        launch_player('keeper', options)
-    # Then takers, after sleeping to make sure keepers are team 0.
-    # TODO Watch for players instead of sleeping?
-    # TODO If so, also use 'dispstart' command to start play once all on.
-    sleep(1)
-    for i in xrange(options.taker_count):
-        launch_player('taker', options)
-    # Then monitor.
-    if options.monitor:
-        launch_monitor(options)
+    return run(options)
 
 
-def parse_options():
+def parse_options(args = None, **defaults):
+    """
+    Parses the given list of args, defaulting to sys.argv[1:].
+    Provide [] for default options.
+    """
     from optparse import OptionParser
     parser = OptionParser()
-    default_port = 5800
-    default_size = 20
+    default_port = defaults.get('port', 5800)
+    default_size = defaults.get('size', 20)
+    # TODO Apply other defaults below?
     parser.add_option(
         '--coach', action = 'store_true', default = False,
         help = "Use trainer instead of server referee.")
     parser.add_option(
         # TODO More options are needed before coach/trainer is ready.
-        '--coach-port', type = 'int', default = default_port + 1,
+        '--coach-port', type = 'int', default = None,
         help = "Offline trainer port.")
     parser.add_option(
         '--field-length', type = 'int', default = default_size,
@@ -215,10 +223,10 @@ def parse_options():
         help = "Launch the monitor to watch the play.")
     parser.add_option(
         '--no-log-keepaway', action = 'store_false', default = True,
-        dest = 'log_keepaway', 
+        dest = 'log_keepaway',
         help = "Do not save kwy log file.")
     parser.add_option(
-        '--online-coach-port', type = 'int', default = default_port + 2,
+        '--online-coach-port', type = 'int', default = None,
         help = "Online coach port.")
     parser.add_option(
         '--port', type = 'int', default = default_port,
@@ -226,9 +234,12 @@ def parse_options():
     parser.add_option(
         '--restricted-vision', action = 'store_true', default = False,
         help = "Restrict player vision to less than 360 degrees.")
+    # TODO This isn't used at all in the keepaway program.
     parser.add_option(
         '--start-learning-after', type = 'int', default = -1,
         help = "Start learning after the given number of episodes.")
+    # TODO This isn't used at all in the keepaway program.
+    # TODO Perhaps kick off a monitor here to watch for episodes?
     parser.add_option(
         '--stop-after', type = 'int', default = -1,
         help = "Stop play after the given number of episodes.")
@@ -253,8 +264,86 @@ def parse_options():
         # TODO Nicer syntax for extensions?
         #type = 'choice', choices = ['hand', 'learned'],
         help = "The policy for the takers to follow.")
-    options = parser.parse_args()[0]
+    options = parser.parse_args(args)[0]
+    # Set coach_port and online_coach_port here, if not set previously.
+    # This will allow them to be based on the args-given port.
+    # This way, things still work even if just given a new main port.
+    if not options.coach_port:
+        options.coach_port = options.port + 1
+    if not options.online_coach_port:
+        # Seems nicer to base this on coach port, in case it was given manually.
+        options.online_coach_port = options.coach_port + 1
     return options
+
+
+def relative(path):
+    """
+    Returns a full path, relative to the current script's dir.
+    """
+    from os.path import abspath, dirname, join
+    full = abspath(join(dirname(__file__), path))
+    return full
+
+
+def run(options):
+    """
+    Run with an options object already given.
+    Handy for calling from other scripts rather than a shell.
+    """
+    from time import sleep
+    # print options
+    # First, make sure a server isn't already running on this port.
+    if server_running(options.port):
+        raise RuntimeError(
+            "Server already running on port {0}.".format(options.port))
+    # Kick off server.
+    server_pid = launch_server(options)
+    # Then keepers.
+    for i in xrange(options.keeper_count):
+        launch_player('keeper', options)
+    # Then takers, after sleeping to make sure keepers are team 0.
+    # TODO Watch for players instead of sleeping?
+    # TODO If so, also use 'dispstart' command to start play once all on.
+    sleep(1)
+    for i in xrange(options.taker_count):
+        launch_player('taker', options)
+    # Then monitor.
+    if options.monitor:
+        launch_monitor(options)
+    # All done.
+    return Any(server_pid = server_pid)
+
+
+def server_running(port):
+    """Impersonate a monitor to see if the server is running already."""
+    from socket import AF_INET, SOCK_DGRAM, socket
+    from time import sleep
+    sock = socket(AF_INET, SOCK_DGRAM)
+    try:
+        sock.setblocking(False)
+        sock.bind(('', 0))
+        # Technically, this allows for race conditions, but it should cover
+        # common cases of accidentally trying to kick off an already running
+        # server.
+        try:
+            sock.sendto(
+                '(dispinit version 4)', ('127.0.0.1', port))
+            # TODO Sleep seems needed here, but I don't sleep here on the wait
+            # TODO version.
+            # TODO Does it only work because we catch the reply in the next
+            # TODO round?
+            sleep(0.1)
+            # Sample rcssclient uses buffer size 8192.
+            # TODO Do I care to validate these? data, sender =
+            sock.recvfrom(8192)
+            sock.sendto('(dispbye)', ('127.0.0.1', port))
+            # It's running.
+            return True
+        except:
+            # TODO Check to make sure it's the right kind of error?
+            return False
+    finally:
+        sock.close()
 
 
 def wait_for_server(port):
