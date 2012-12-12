@@ -298,20 +298,22 @@ int main( int argc, char * argv[] )
 #ifdef WIN32
     // TODO
 #else
-    void* extension = dlopen(extensionName, RTLD_LAZY);
-    if (extension) {
-      createAgent =
-        reinterpret_cast<CreateAgent>(dlsym(extension, "createAgent"));
-    }
-#endif
+    // Load the extension.
+    void* extension = dlopen(extensionName, RTLD_NOW);
     if (!extension) {
       cerr << "Failed to load extension " << extensionName << endl;
+      cerr << dlerror() << endl;
       return EXIT_FAILURE;
     }
+    // Find the createAgent function.
+    createAgent =
+      reinterpret_cast<CreateAgent>(dlsym(extension, "createAgent"));
     if (!createAgent) {
       cerr << "Failed to find createAgent in " << extensionName << endl;
+      cerr << dlerror() << endl;
       return EXIT_FAILURE;
     }
+#endif
     sa = createAgent(
       wm, numFeatures, numActions, bLearn, loadWeightsFile, saveWeightsFile
     );
