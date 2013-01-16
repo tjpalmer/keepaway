@@ -17,14 +17,30 @@ your system has python and knows shebangs):
 
   ./keepaway.py --monitor
 
-The original README from Gregory Kuhlmann and Peter Stone follows. A more
-thorough update might be made at some point.
+The original README from Gregory Kuhlmann and Peter Stone follows. Following
+that is the original README for the learning code, including the list of
+contributors to that code base. See these READMEs also for papers to reference
+when using this code.
+
+Also included in this combined code base is the Tile Coding Software version 2
+from Richard S. Sutton, included with permission from him. This software, as
+well as more recent versions, is also available directly from the author
+(http://webdocs.cs.ualberta.ca/~sutton/tiles2.html).
+
+The combined, updated code base have also included assistance from Stephen Kelly
+(initial integration of learning code) and Luiz Celiberto (my updates in support
+of latest rcss and gcc checked against his), among others.
+
+I have also made some minimal changes to support dynamic loading of shared
+library code for agent behavior, thus avoiding the need to change the original
+code. See the "ext=" hackery in main.cc for more details.
 
 - Tom Palmer
 
 
----------------------
-
+-------------------
+README for Keepaway
+-------------------
 
 This package contains the source code for the Keepaway benchmark 
 player framework and the source code for some keepaway utility
@@ -123,3 +139,67 @@ monitor
 To stop:
 killserver
 
+
+---------------------------------
+README for Keepaway learning code
+---------------------------------
+
+This package contains the learning code to accompany the Keepaway
+benchmark player framework.
+
+This is a particular snapshot of the code, and different published
+results have used different learning algorithms.  We don't guarantee
+that this particular instantiation will line up with all of the
+published papers using keepaway.  Variations on the learning algorithm
+are described in the papers indexed here:
+http://www.cs.utexas.edu/~pstone/Papers/bib2html/
+
+We provide this code as-is with no support implied. This code has not
+been tested and we make no guarantees that it will even compile.
+
+The learning code was created by
+
+ Peter Stone
+ Gregory Kuhlmann
+ Matthew E. Taylor
+ Yaxin Liu
+ and Shivaram Kalyanakrishnan
+
+in the Department of Computer Sciences
+at the University of Texas at Austin:
+http://www.cs.utexas.edu/~AustinVilla/sim/keepaway/
+
+This package was created as part of our research using
+the keepaway domain.  The following is a list of selected 
+publications:
+
+Keepaway Soccer: From Machine Learning Testbed to Benchmark.
+Peter Stone, Gregory Kuhlmann, Matthew E. Taylor, and Yaxin Liu.
+In Itsuki Noda, Adam Jacoff, Ansgar Bredenfeld, and Yasutake Takahashi, editors,
+RoboCup-2005: Robot Soccer World Cup IX, Springer Verlag, Berlin, 2006. To
+appear.
+
+Reinforcement Learning for RoboCup-Soccer Keepaway.
+Peter Stone, Richard S. Sutton, and Gregory Kuhlmann.
+Adaptive Behavior, 2005. 
+
+We ask that you please cite these papers if you publish work that builds
+off of this code.
+
+The players are built upon version 3.3 of the UvA Basic team that is 
+publicly available from:
+http://staff.science.uva.nl/~jellekok/robocup/2003/index_en.html
+
+The communication code is based on:
+saymsglib - a library to generate and parse messages in the Coachable agent
+communication standard created by Carnegie Mellon University.  It is 
+described here:
+http://www-2.cs.cmu.edu/~robosoccer/simulator/comm_standard.html
+
+REQUIREMENTS:
+
+The Keepaway Player Framework
+http://www.cs.utexas.edu/~AustinVilla/sim/keepaway/
+
+The RoboCup Soccer Server, available from:
+http://sserver.sf.net

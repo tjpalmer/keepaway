@@ -20,15 +20,24 @@ def launch_player(player_type, options):
     # TODO $klog_opts $kdraw_opts $kweight_opts
     player_options = dict(
         e = int(getattr(options, player_type + '_learn')),
-        f = getattr(options, player_type + '_output'),
         j = options.taker_count,
         k = options.keeper_count,
         p = options.port,
         q = getattr(options, player_type + '_policy'),
         t = player_type + 's', # Pluralize for team name. TODO Really?
         x = options.stop_after,
-        y = options.start_learning_after,
-        w = getattr(options, player_type + '_input'))
+        y = options.start_learning_after)
+
+    # Handle optional args.
+    def put_optional(key, name):
+        value = getattr(options, name, None)
+        if value:
+            player_options[key] = value
+    # TODO Append player indices? Standard keepaway.sh does, and
+    # TODO LinearSarsaAgent saves for each player.
+    # TODO However, for my own input, I don't want independent files. Hrmm.
+    put_optional('f', player_type + '_output')
+    put_optional('w', player_type + '_input')
 
     # Change the dict to a sorted list of args.
     player_options = player_options.items()
@@ -38,10 +47,10 @@ def launch_player(player_type, options):
     player_options = list(chain(*player_options))
 
     # Build keepaway_player command, and fork it off.
-    # TODO Locate rcssserver executable reliably.
+    # TODO Always assume keepaway_player is here?
     command = [relative('./player/keepaway_player')] + player_options
-    # print command
-    # print " ".join(command)
+    #print command
+    #print " ".join(command)
     Popen(command)
 
 
@@ -147,7 +156,7 @@ def launch_server(options):
     # Build rcssserver command, and fork it off.
     # TODO Locate rcssserver executable reliably.
     command = [relative('../rcssserver/src/rcssserver')] + server_options
-    # print command
+    print command
     # print " ".join(command)
     popen = Popen(command)
 

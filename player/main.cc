@@ -57,6 +57,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ActHandler.h"
 #include "KeepawayPlayer.h"
 #include "HandCodedAgent.h"
+#include "LinearSarsaAgent.h"
 
 #include "Parse.h"
 #include <string.h>   // needed for strcpy
@@ -67,6 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <pthread.h>  // needed for pthread_create
 #endif
 #include <stdlib.h>   // needed for exit
+#include <vector>
 
 extern Logger Log;     /*!< This is a reference to the normal Logger class   */
 extern LoggerDraw LogDraw; /*!< This is a reference to the drawing Logger class  */
@@ -282,15 +284,17 @@ int main( int argc, char * argv[] )
 
   if ( strlen( strPolicy ) > 0 && strPolicy[0] == 'l' ) {
     // (l)earned
-//     sa = new LearningAgent( numFeatures, numActions,
-//                          bLearn, loadWeightsFile, saveWeightsFile ); 
+    sa = new LinearSarsaAgent(
+      numFeatures, numActions, bLearn, resolutions,
+      loadWeightsFile, saveWeightsFile
+    );
   } else if (!strncmp(strPolicy, "ext=", 4)) {
     // Load extension.
     // Name should come after "ext=". Yes, this is hackish.
     char* extensionName = strPolicy + 4;
     // These parameters are based on the expected learning agent parameters
     // above.
-    // Added WorldModel for agent's needing richer/relational representation!
+    // Added WorldModel for agents needing richer/relational representation!
     typedef SMDPAgent* (*CreateAgent)(
       WorldModel&, int, int, bool, char*, char*
     );
