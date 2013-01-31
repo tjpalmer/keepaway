@@ -198,7 +198,9 @@ def parse_options(args = None, **defaults):
         help = "Playing field y-axis size.")
     parser.add_option(
         '--game-start', type = 'int', default = 8,
-        help = "Game start delay time.")
+        help =
+            "Game start delay time, although we also now kick off 1 second "
+            "after takers appear.")
     parser.add_option(
         '--keeper-count', type = 'int', default = 3,
         help = "Number of keepers.")
@@ -305,20 +307,26 @@ def run(options):
     if server_running(options.port):
         raise RuntimeError(
             "Server already running on port {0}.".format(options.port))
+
     # Kick off server.
     server_pid = launch_server(options)
+
     # Then keepers.
     for i in xrange(options.keeper_count):
         launch_player('keeper', options)
-    # Then takers, after sleeping to make sure keepers are team 0.
-    # TODO Watch for players instead of sleeping?
-    # TODO If so, also use 'dispstart' command to start play once all on.
-    sleep(1)
+    # Watch for the team to make sure keepers are team 0.
+    wait_for_players(options.port, 'keepers')
+
+    # Then takers.
     for i in xrange(options.taker_count):
         launch_player('taker', options)
+    # Allow dispstart to kick off play.
+    wait_for_players(options.port, 'takers', True)
+
     # Then monitor.
     if options.monitor:
         launch_monitor(options)
+
     # All done.
     return Any(server_pid = server_pid)
 
@@ -351,6 +359,61 @@ def server_running(port):
         except:
             # TODO Check to make sure it's the right kind of error?
             return False
+    finally:
+        sock.close()
+
+
+def wait_for_players(port, team_name, go = False):
+    """
+    Impersonate a monitor to see if players are connected yet.
+    TODO I have hacked multiple monitors here, and I ought to consider unifying
+    TODO them.
+    TODO This one has some corrected logic, such as updating the port.
+    """
+    from socket import AF_INET, SOCK_DGRAM, socket
+    from time import sleep
+    sock = socket(AF_INET, SOCK_DGRAM)
+    try:
+        sock.setblocking(False)
+        sock.bind(('', 0))
+        # Loop until successful.
+        connected = False
+        while True:
+            # Delay a bit between attempts, so we don't bother the server nor
+            # the user console.
+            sleep(0.25)
+            try:
+                if not connected:
+                    sock.sendto(
+                        '(dispinit version 4)', ('127.0.0.1', port))
+                # Sample rcssclient uses buffer size 8192.
+                while True:
+                    data, sender = sock.recvfrom(8192)
+                    connected = True
+                    # Update the port for further communications.
+                    port = sender[1]
+                    if team_name in data:
+                        break
+                if go:
+                    # Delay just a bit. If we start immediately after we see
+                    # the takers, they don't seem to behave sanely, at least
+                    # without synch-mode.
+                    # I'm not sure, but I think it might relate to logic in
+                    # SenseHandler::synchronize.
+                    # I spent some time looking at 'show' status updates to see
+                    # if I could find a sure pattern to know when we're safe.
+                    # Might be something there, but I'm not sure how general
+                    # anything is.
+                    sleep(1.0)
+                    sock.sendto('(dispstart)', ('127.0.0.1', port))
+                    sock.recvfrom(8192)
+                    print("Sent dispstart!")
+                sock.sendto('(dispbye)', ('127.0.0.1', port))
+                # Good to go.
+                break
+            except Exception as e:
+                # TODO Check to make sure it's the right kind of error?
+                pass
     finally:
         sock.close()
 
