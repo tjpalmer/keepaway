@@ -14,7 +14,7 @@ set output "./graph.eps"
 set title ""
 
 # Appearance
-set data style lines
+set style data lines
 set nokey
 set border 3
 set xtics nomirror

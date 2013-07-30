@@ -11,7 +11,20 @@ class Any:
             self.__dict__.update(args)
 
 
-def launch_player(player_type, options):
+def ensure_parent_dir(name):
+    """
+    Ensures that the parent dir of name exists as a dir.
+    """
+    from os import makedirs
+    from os.path import dirname, isdir
+    parent = dirname(name)
+    if not isdir(parent):
+        # Usually, makedirs raises an error when failing, and it fails if the
+        # path already exists, so don't check it.
+        makedirs(parent)
+
+
+def launch_player(player_type, index, options):
     """Launcher for both keepers and takers."""
     from itertools import chain
     from subprocess import Popen
@@ -29,15 +42,23 @@ def launch_player(player_type, options):
         y = options.start_learning_after)
 
     # Handle optional args.
-    def put_optional(key, name):
+    def put_player_file(key, name):
         value = getattr(options, name, None)
         if value:
+            if options.file_per_player:
+                # Append player index before the extension.
+                # TODO Support prefixed 0 if more than 9 players?
+                pound_index = value.rfind("#")
+                if pound_index == -1:
+                    raise RuntimeError("No # in: " + value)
+                value = value[:pound_index] + str(index) + value[pound_index+1:]
+            ensure_parent_dir(value)
             player_options[key] = value
     # TODO Append player indices? Standard keepaway.sh does, and
     # TODO LinearSarsaAgent saves for each player.
     # TODO However, for my own input, I don't want independent files. Hrmm.
-    put_optional('f', player_type + '_output')
-    put_optional('w', player_type + '_input')
+    put_player_file('f', player_type + '_output')
+    put_player_file('w', player_type + '_input')
 
     # Change the dict to a sorted list of args.
     player_options = player_options.items()
@@ -170,6 +191,7 @@ def main():
     Just parses shell options and kicks things off.
     """
     options = parse_options()
+    # TODO Option for waiting and letting Ctrl+C kill all?
     return run(options)
 
 
@@ -196,6 +218,11 @@ def parse_options(args = None, **defaults):
     parser.add_option(
         '--field-width', type = 'int', default = default_size,
         help = "Playing field y-axis size.")
+    parser.add_option(
+        '--file-per-player', action = 'store_true', default = False,
+        help =
+            "Replace last ocurrence of # in player file names with the "
+            "player's index number.")
     parser.add_option(
         '--game-start', type = 'int', default = 8,
         help =
@@ -313,13 +340,13 @@ def run(options):
 
     # Then keepers.
     for i in xrange(options.keeper_count):
-        launch_player('keeper', options)
+        launch_player('keeper', i, options)
     # Watch for the team to make sure keepers are team 0.
     wait_for_players(options.port, 'keepers')
 
     # Then takers.
     for i in xrange(options.taker_count):
-        launch_player('taker', options)
+        launch_player('taker', i, options)
     # Allow dispstart to kick off play.
     wait_for_players(options.port, 'takers', True)
 
