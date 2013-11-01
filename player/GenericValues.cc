@@ -259,7 +259,7 @@ GenericValues::~GenericValues( void )
 {
   for( int i = 0 ; i < getValuesTotal( ) ; i++ )
     delete m_values[ i ];
-  delete m_values;
+  delete[] m_values;
 
   if( m_strClassName )
     free( m_strClassName );

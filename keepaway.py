@@ -18,7 +18,7 @@ def ensure_parent_dir(name):
     from os import makedirs
     from os.path import dirname, isdir
     parent = dirname(name)
-    if not isdir(parent):
+    if parent and not isdir(parent):
         # Usually, makedirs raises an error when failing, and it fails if the
         # path already exists, so don't check it.
         makedirs(parent)
@@ -52,7 +52,12 @@ def launch_player(player_type, index, options):
                 if pound_index == -1:
                     raise RuntimeError("No # in: " + value)
                 value = value[:pound_index] + str(index) + value[pound_index+1:]
-            ensure_parent_dir(value)
+            if key.endswith('_output'):
+                # For output, we want to make sure we have a place to store it.
+                # Note that this assumes the value is proper file path/name.
+                # This isn't needed for input (and I have some policy modules
+                # that use input in fancier ways than just as file names).
+                ensure_parent_dir(value)
             player_options[key] = value
     # TODO Append player indices? Standard keepaway.sh does, and
     # TODO LinearSarsaAgent saves for each player.
