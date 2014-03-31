@@ -58,6 +58,10 @@ LinearSarsaAgent::LinearSarsaAgent( int numFeatures, int numActions, bool bLearn
     loadWeights( loadWeightsFile );
 }
 
+void LinearSarsaAgent::setEpsilon(double epsilon) {
+  this->epsilon = epsilon;
+}
+
 int LinearSarsaAgent::startEpisode( double state[] )
 {
   epochNum++;
@@ -142,6 +146,16 @@ void LinearSarsaAgent::endEpisode( double reward )
     saveWeights( weightsFile );
   }
   lastAction = -1;
+}
+
+void LinearSarsaAgent::shutDown()
+{
+  // We usually only save weights at random intervals.
+  // Always save at shutdown (if we are in saving mode).
+  if ( bLearning && bSaveWeights ) {
+    cout << "Saving weights at shutdown." << endl;
+    saveWeights( weightsFile );
+  }
 }
 
 int LinearSarsaAgent::selectAction()

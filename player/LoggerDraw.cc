@@ -281,8 +281,8 @@ void LoggerDraw::logLine( char* label,
   }
 }
 
-void LoggerDraw::logText( char* label,
-			  VecPosition pos, char* text, int depth,
+void LoggerDraw::logText( const char* label,
+			  VecPosition pos, const char* text, int depth,
 			  ColorT color, double intensity )
 {
   if ( isActive() ) {
@@ -417,7 +417,7 @@ ostream& LoggerDraw::getOutputStream()
   return *m_os;
 }
 
-char* LoggerDraw::escape( char* str )
+char* LoggerDraw::escape( const char* str )
 {
   static char str2[ MAX_TEXT ];
 

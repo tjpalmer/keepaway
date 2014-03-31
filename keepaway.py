@@ -47,7 +47,7 @@ def launch_player(player_type, index, options):
         if value:
             if options.file_per_player:
                 # Append player index before the extension.
-                # TODO Support prefixed 0 if more than 9 players?
+                # TODO Support prefixed 0 if more than 10 players?
                 pound_index = value.rfind("#")
                 if pound_index == -1:
                     raise RuntimeError("No # in: " + value)
@@ -77,7 +77,8 @@ def launch_player(player_type, index, options):
     command = [relative('./player/keepaway_player')] + player_options
     #print command
     #print " ".join(command)
-    Popen(command)
+    popen = Popen(command)
+    return popen.pid
 
 
 def launch_monitor(options):
@@ -344,8 +345,9 @@ def run(options):
     server_pid = launch_server(options)
 
     # Then keepers.
+    keeper_pids = []
     for i in xrange(options.keeper_count):
-        launch_player('keeper', i, options)
+        keeper_pids.append(launch_player('keeper', i, options))
     # Watch for the team to make sure keepers are team 0.
     wait_for_players(options.port, 'keepers')
 
@@ -360,7 +362,7 @@ def run(options):
         launch_monitor(options)
 
     # All done.
-    return Any(server_pid = server_pid)
+    return Any(keeper_pids = keeper_pids, server_pid = server_pid)
 
 
 def server_running(port):

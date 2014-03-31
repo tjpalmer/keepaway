@@ -242,8 +242,8 @@ class LoggerDraw
 		VecPosition start, VecPosition end, int depth=-1,
 		ColorT color=COLOR_ILLEGAL, double intensity=1.0 );
 
-  void logText( char* label,
-		VecPosition pos, char* text, int depth=-1,
+  void logText( const char* label,
+		VecPosition pos, const char* text, int depth=-1,
 		ColorT color=COLOR_ILLEGAL, double intensity=1.0 );
 
   void logCircle( char* label,
@@ -264,7 +264,7 @@ class LoggerDraw
   void setOutputStream( ostream& os );
   ostream& getOutputStream();
 
-  char* escape( char* str );
+  char* escape( const char* str );
 
 } ;
 

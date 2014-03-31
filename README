@@ -27,7 +27,7 @@ from Richard S. Sutton, included with permission from him. This software, as
 well as more recent versions, is also available directly from the author
 (http://webdocs.cs.ualberta.ca/~sutton/tiles2.html).
 
-The combined, updated code base have also included assistance from Stephen Kelly
+The combined, updated code base has also included assistance from Stephen Kelly
 (initial integration of learning code) and Luiz Celiberto (my updates in support
 of latest rcss and gcc checked against his), among others.
 

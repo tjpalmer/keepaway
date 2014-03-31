@@ -146,16 +146,16 @@ int main( int argc, char * argv[] )
             cerr << "Error in reading client file: " << argv[i+1] << endl;
           break;
         case 'd':
-	  str   = &argv[i+1][0];
+          str   = &argv[i+1][0];
           LogDraw.setActive( Parse::parseFirstInt( &str ) == 1 );
-	  break;
+          break;
         case 'e': // enable learning 0/1
           str    = &argv[i+1][0];
           bLearn = (Parse::parseFirstInt( &str ) == 1 ) ? true : false ;
           break;
         case 'f':
-	  strcpy( saveWeightsFile, argv[i+1] );
-	  break;
+          strcpy( saveWeightsFile, argv[i+1] );
+          break;
         case 'h':                                   // host server or help
           if( strlen( argv [i]) > 2 && argv[i][2] == 'e' )
           {
@@ -170,13 +170,13 @@ int main( int argc, char * argv[] )
           bInfo = (Parse::parseFirstInt( &str ) == 1 ) ? true : false ;
           break;
         case 'j':
-	  str   = &argv[i+1][0];
-	  iNumTakers = Parse::parseFirstInt( &str );
-	  break;
+          str   = &argv[i+1][0];
+          iNumTakers = Parse::parseFirstInt( &str );
+          break;
         case 'k':
-	  str   = &argv[i+1][0];
-	  iNumKeepers = Parse::parseFirstInt( &str );
-	  break;
+          str   = &argv[i+1][0];
+          iNumKeepers = Parse::parseFirstInt( &str );
+          break;
         case 'l':                                   // loglevel int[..int]
           str = &argv[i+1][0];
           iMinLogLevel = Parse::parseFirstInt( &str );
@@ -211,8 +211,8 @@ int main( int argc, char * argv[] )
           iPort = Parse::parseFirstInt( &str );
           break;
         case 'q':
-	  strcpy( strPolicy, argv[i+1] );
-	  break;	  
+          strcpy( strPolicy, argv[i+1] );
+          break;
         case 'r':                                   // reconnect 1 0
           str = &argv[i+1][0];
           iReconnect = Parse::parseFirstInt( &str );
@@ -229,16 +229,16 @@ int main( int argc, char * argv[] )
           dVersion = Parse::parseFirstDouble( &str );
           break;
         case 'w':
-	  strcpy( loadWeightsFile, argv[i+1] );
-	  break;
+          strcpy( loadWeightsFile, argv[i+1] );
+          break;
         case 'x':
-	  str   = &argv[i+1][0];
-	  iStopAfter = Parse::parseFirstInt( &str ); // exit after running for iStopAfter episodes
-	  break;
+          str   = &argv[i+1][0];
+          iStopAfter = Parse::parseFirstInt( &str ); // exit after running for iStopAfter episodes
+          break;
         case 'y':
-	  str   = &argv[i+1][0];
-	  iStartLearningAfter = Parse::parseFirstInt( &str ); // initially don't learn, but turn on learning after iStartLearningAfter episodes have passed
-	  break;
+          str   = &argv[i+1][0];
+          iStartLearningAfter = Parse::parseFirstInt( &str ); // initially don't learn, but turn on learning after iStartLearningAfter episodes have passed
+          break;
         default:
           cerr << "(main) Unknown command option: " << argv[i] << endl;
       }
@@ -279,15 +279,23 @@ int main( int argc, char * argv[] )
   double minValues[ MAX_STATE_VARS ];
   double resolutions[ MAX_STATE_VARS ];
   int numFeatures = wm.keeperStateRangesAndResolutions( ranges, minValues, resolutions, 
-							iNumKeepers, iNumTakers );
+                                                        iNumKeepers, iNumTakers );
   int numActions = iNumKeepers;
 
   if ( strlen( strPolicy ) > 0 && strPolicy[0] == 'l' ) {
     // (l)earned
-    sa = new LinearSarsaAgent(
+    // or "learned!" -> Don't explore at all.
+    LinearSarsaAgent* linearSarsaAgent = new LinearSarsaAgent(
       numFeatures, numActions, bLearn, resolutions,
       loadWeightsFile, saveWeightsFile
     );
+    // Check for pure exploitation mode.
+    size_t length = strlen(strPolicy);
+    if (strPolicy[length - 1] == '!') {
+      linearSarsaAgent->setEpsilon(0.0);
+    }
+    // Done setting up.
+    sa = linearSarsaAgent;
   } else if (!strncmp(strPolicy, "ext=", 4)) {
     // Load extension.
     // Name should come after "ext=". Yes, this is hackish.
@@ -324,7 +332,7 @@ int main( int argc, char * argv[] )
   } else {
     // (ha)nd (ho)ld (r)andom
     sa = new HandCodedAgent( numFeatures, numActions,
-			     strPolicy, &wm );
+                             strPolicy, &wm );
   }
 
   if (!sa) {
@@ -332,7 +340,7 @@ int main( int argc, char * argv[] )
     return EXIT_FAILURE;
   }
   KeepawayPlayer bp( sa, &a, &wm, &ss, &cs, strTeamName, 
-		     iNumKeepers, iNumTakers, dVersion, iReconnect );
+                     iNumKeepers, iNumTakers, dVersion, iReconnect );
 
 #ifdef WIN32
   DWORD id1;

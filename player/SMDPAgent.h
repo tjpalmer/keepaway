@@ -56,6 +56,9 @@ class SMDPAgent
   virtual int  step( double reward, double state[] ) = 0;
   virtual void endEpisode( double reward ) = 0;
   virtual void setParams(int iCutoffEpisodes, int iStopLearningEpisodes) = 0; //*met 8/16/05
+
+  // Optional customization point.
+  virtual void shutDown() {}
 } ;
 
 #endif

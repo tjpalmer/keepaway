@@ -65,11 +65,14 @@ class LinearSarsaAgent:public SMDPAgent
 				      char   *loadWeightsFile,
 				      char   *saveWeightsFile );
 
+  void setEpsilon(double epsilon);
+
   // SMDP Sarsa implementation
   int  startEpisode( double state[] );
   int  step( double reward, double state[] );
   void endEpisode( double reward );
   void setParams(int iCutoffEpisodes, int iStopLearningEpisodes);
+  void shutDown();
 } ;
 
 #endif
