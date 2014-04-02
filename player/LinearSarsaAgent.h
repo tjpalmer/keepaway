@@ -13,6 +13,10 @@ class LinearSarsaAgent:public SMDPAgent
   char weightsFile[256];
   bool bLearning;
   bool bSaveWeights;
+
+  /// Hive mind indicator and file descriptor.
+  bool hiveMind;
+  int hiveFile;
   
   int epochNum;
   int lastAction;
@@ -25,7 +29,8 @@ class LinearSarsaAgent:public SMDPAgent
   double tileWidths[ MAX_STATE_VARS ];
   double Q[ MAX_ACTIONS ];
 
-  double weights[ RL_MEMORY_SIZE ];
+  double* weights;
+  double weightsRaw[ RL_MEMORY_SIZE ];
   double traces[ RL_MEMORY_SIZE ];
 
   int tiles[ MAX_ACTIONS ][ RL_MAX_NUM_TILINGS ];
@@ -59,11 +64,12 @@ class LinearSarsaAgent:public SMDPAgent
 
  public:
   LinearSarsaAgent                  ( int    numFeatures,
-				      int    numActions,
-				      bool   bLearn,
-				      double widths[],
-				      char   *loadWeightsFile,
-				      char   *saveWeightsFile );
+                                      int    numActions,
+                                      bool   bLearn,
+                                      double widths[],
+                                      char   *loadWeightsFile,
+                                      char   *saveWeightsFile,
+                                      bool   hiveMind);
 
   void setEpsilon(double epsilon);
 

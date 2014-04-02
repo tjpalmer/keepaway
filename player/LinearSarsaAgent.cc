@@ -1,21 +1,64 @@
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
+#include <sstream>
 #include "LinearSarsaAgent.h"
 #include "LoggerDraw.h"
 
 // If all is well, there should be no mention of anything keepaway- or soccer-
 // related in this file. 
 
+/**
+ * Designed specifically to match the serialization format for collision_table.
+ * See collision_table::save and collision_table::restore.
+ */
+#pragma pack(push, 1)
+struct CollisionTableHeader {
+  long m;
+  int safe;
+  long calls;
+  long clearhits;
+  long collisions;
+};
+#pragma pack(pop)
+#define VERBOSE_HIVE_MIND false
+
+/**
+ * Assumes collision table header follows weights.
+ * Returns the memory location after the header because that's useful for colTab
+ * data array.
+ */
+long* loadColTabHeader(collision_table* colTab, double* weights) {
+  CollisionTableHeader* colTabHeader =
+    reinterpret_cast<CollisionTableHeader*>(weights + RL_MEMORY_SIZE);
+  // Do each field individually, since they don't all line up exactly for an
+  // easy copy.
+  colTab->calls = colTabHeader->calls;
+  colTab->clearhits = colTabHeader->clearhits;
+  colTab->collisions = colTabHeader->collisions;
+  colTab->m = colTabHeader->m;
+  colTab->safe = colTabHeader->safe;
+  if (VERBOSE_HIVE_MIND) {
+    cout << "Loaded colTabHeader:" << endl
+      << " calls: " << colTab->calls << endl
+      << " clearhits: " << colTab->clearhits << endl
+      << " collisions: " << colTab->collisions << endl
+      << " m: " << colTab->m << endl
+      << " safe: " << colTab->safe << endl;
+  }
+  return reinterpret_cast<long*>(colTabHeader + 1);
+}
+
 extern LoggerDraw LogDraw;
 
 LinearSarsaAgent::LinearSarsaAgent( int numFeatures, int numActions, bool bLearn,
-				    double widths[],
-				    char *loadWeightsFile, char *saveWeightsFile ):
-  SMDPAgent( numFeatures, numActions )
+                                    double widths[],
+                                    char *loadWeightsFile, char *saveWeightsFile, bool hiveMind ):
+  SMDPAgent( numFeatures, numActions ), hiveFile(-1)
 {
   bLearning = bLearn;
 
@@ -23,9 +66,15 @@ LinearSarsaAgent::LinearSarsaAgent( int numFeatures, int numActions, bool bLearn
     tileWidths[ i ] = widths[ i ];
   }
 
+  // Saving weights (including for hive mind) requires learning and a file name.
+  this->hiveMind = false;
   if ( bLearning && strlen( saveWeightsFile ) > 0 ) {
     strcpy( weightsFile, saveWeightsFile );
     bSaveWeights = true;
+    // Hive mind further requires loading and saving from the same file.
+    if (!strcmp(loadWeightsFile, saveWeightsFile)) {
+      this->hiveMind = hiveMind;
+    }
   }
   else {
     bSaveWeights = false;
@@ -41,6 +90,7 @@ LinearSarsaAgent::LinearSarsaAgent( int numFeatures, int numActions, bool bLearn
   lastAction = -1;
 
   numNonzeroTraces = 0;
+  weights = weightsRaw;
   for ( int i = 0; i < RL_MEMORY_SIZE; i++ ) {
     weights[ i ] = 0;
     traces[ i ] = 0;
@@ -50,7 +100,7 @@ LinearSarsaAgent::LinearSarsaAgent( int numFeatures, int numActions, bool bLearn
   int tmp[ 2 ];
   float tmpf[ 2 ];
   colTab = new collision_table( RL_MEMORY_SIZE, 1 );
-    
+
   GetTiles( tmp, 1, 1, tmpf, 0 );  // A dummy call to set the hashing table    
   srand( time( NULL ) );
 
@@ -64,6 +114,7 @@ void LinearSarsaAgent::setEpsilon(double epsilon) {
 
 int LinearSarsaAgent::startEpisode( double state[] )
 {
+  if (hiveMind) loadColTabHeader(colTab, weights);
   epochNum++;
   decayTraces( 0 );
   loadTiles( state );
@@ -81,11 +132,13 @@ int LinearSarsaAgent::startEpisode( double state[] )
 
   for ( int j = 0; j < numTilings; j++ )
     setTrace( tiles[ lastAction ][ j ], 1.0 );
+  if (hiveMind) saveWeights(weightsFile);
   return lastAction;
 }
 
 int LinearSarsaAgent::step( double reward, double state[] )
 {
+  if (hiveMind) loadColTabHeader(colTab, weights);
   double delta = reward - Q[ lastAction ];
   loadTiles( state );
   for ( int a = 0; a < getNumActions(); a++ ) {
@@ -106,8 +159,8 @@ int LinearSarsaAgent::step( double reward, double state[] )
   //char buffer[128];
   sprintf( buffer, "reward: %.2f", reward ); 
   LogDraw.logText( "reward", VecPosition( 25, 30 ),
-		   buffer,
-		   1, COLOR_NAVY );
+                   buffer,
+                   1, COLOR_NAVY );
 
   delta += Q[ lastAction ];
   updateWeights( delta );
@@ -123,17 +176,19 @@ int LinearSarsaAgent::step( double reward, double state[] )
   for ( int j = 0; j < numTilings; j++ )      //replace/set traces F[a]
     setTrace( tiles[ lastAction ][ j ], 1.0 );
 
+  if (hiveMind) saveWeights(weightsFile);
   return lastAction;
 }
 
 void LinearSarsaAgent::endEpisode( double reward )
 {
+  if (hiveMind) loadColTabHeader(colTab, weights);
   if ( bLearning && lastAction != -1 ) { /* otherwise we never ran on this episode */
     char buffer[128];
     sprintf( buffer, "reward: %.2f", reward ); 
     LogDraw.logText( "reward", VecPosition( 25, 30 ),
-		     buffer,
-		     1, COLOR_NAVY );
+                     buffer,
+                     1, COLOR_NAVY );
 
     /* finishing up the last episode */
     /* assuming gamma = 1  -- if not,error*/
@@ -141,10 +196,14 @@ void LinearSarsaAgent::endEpisode( double reward )
       cerr << "We're assuming gamma's 1" << endl;
     double delta = reward - Q[ lastAction ];
     updateWeights( delta );
+    // TODO Actually, there's still possibly risk for trouble here with multiple
+    // TODO players stomping each other. Is this okay?
+    // TODO The weight updates themselves are in order.
   }
-  if ( bLearning && bSaveWeights && rand() % 200 == 0 ) {
+  if ( bLearning && bSaveWeights && rand() % 200 == 0 && !hiveMind ) {
     saveWeights( weightsFile );
   }
+  if (hiveMind) saveWeights(weightsFile);
   lastAction = -1;
 }
 
@@ -155,6 +214,19 @@ void LinearSarsaAgent::shutDown()
   if ( bLearning && bSaveWeights ) {
     cout << "Saving weights at shutdown." << endl;
     saveWeights( weightsFile );
+  }
+  // Also shut down the hive mind if needed.
+  if (hiveMind) {
+    size_t mapLength =
+      RL_MEMORY_SIZE * sizeof(double) +
+      sizeof(CollisionTableHeader) +
+      colTab->m * sizeof(long);
+    munmap(weights, mapLength);
+    close(hiveFile);
+    hiveFile = -1;
+    // Go back to the own arrays, since our map is no longer valid.
+    weights = weightsRaw;
+    colTab->data = new long[colTab->m];
   }
 }
 
@@ -176,20 +248,106 @@ int LinearSarsaAgent::selectAction()
 bool LinearSarsaAgent::loadWeights( char *filename )
 {
   cout << "Loading weights from " << filename << endl;
-  int file = open( filename, O_RDONLY );
-  read( file, (char *) weights, RL_MEMORY_SIZE * sizeof(double) );
-  colTab->restore( file );
-  close( file );
+  if (hiveMind) {
+    if (hiveFile < 0) {
+      // First, check the lock file, so we have only one initializer.
+      // Later interaction should be approximately synchronized by having only
+      // one active player at a time per team, but we can't assume that here.
+      stringstream lockNameBuffer;
+      lockNameBuffer << filename << ".lock";
+      const char* lockName = lockNameBuffer.str().c_str();
+      int lock;
+      // 10ms delay (times a million to convert from nanos).
+      timespec sleepTime = {0, 10 * 1000 * 1000};
+      while (true) {
+        lock = open(lockName, O_CREAT | O_EXCL, 0664);
+        if (lock >= 0) break;
+        nanosleep(&sleepTime, NULL);
+      }
+      // First, see if the file is already there.
+      bool fileFound = !access(filename, F_OK);
+      // TODO Extract constant for permissions (0664)?
+      hiveFile = open(filename, O_RDWR | O_CREAT, 0664);
+      size_t mapLength =
+        RL_MEMORY_SIZE * sizeof(double) +
+        sizeof(CollisionTableHeader) +
+        colTab->m * sizeof(long);
+      if (!fileFound) {
+        // Make the file the right size.
+        cout << "Initializing new hive file." << endl;
+        if (lseek(hiveFile, mapLength - 1, SEEK_SET) < 0) {
+          throw "failed to seek initial file size";
+        }
+        if (write(hiveFile, "", 1) < 0) {
+          throw "failed to expand initial file";
+        }
+      }
+      if (hiveFile < 0) throw "failed to open hive file";
+      void* hiveMap =
+        mmap(NULL, mapLength, PROT_READ | PROT_WRITE, MAP_SHARED, hiveFile, 0);
+      if (hiveMap == MAP_FAILED) throw "failed to map hive file";
+      // First the weights.
+      weights = reinterpret_cast<double*>(hiveMap);
+      // Now the collision table header.
+      CollisionTableHeader* colTabHeader =
+        reinterpret_cast<CollisionTableHeader*>(weights + RL_MEMORY_SIZE);
+      if (fileFound) {
+        loadColTabHeader(colTab, weights);
+      }
+      // Now the collision table data.
+      delete[] colTab->data;
+      colTab->data = reinterpret_cast<long*>(colTabHeader + 1);
+      if (!fileFound) {
+        // Clear out initial contents.
+        // The whole team might be doing this at the same time. Is that okay?
+        for ( int i = 0; i < RL_MEMORY_SIZE; i++ ) {
+          weights[ i ] = 0;
+        }
+        colTab->reset();
+        // Make sure the header goes out to the file.
+        saveWeights(weightsFile);
+      }
+      // TODO Separate file lock type with destructor?
+      unlink(lockName);
+    }
+  } else {
+    int file = open( filename, O_RDONLY );
+    read( file, (char *) weights, RL_MEMORY_SIZE * sizeof(double) );
+    colTab->restore( file );
+    close( file );
+  }
   cout << "...done" << endl;
   return true;
 }
 
 bool LinearSarsaAgent::saveWeights( char *filename )
 {
-  int file = open( filename, O_CREAT | O_WRONLY, 0664 );
-  write( file, (char *) weights, RL_MEMORY_SIZE * sizeof(double) );
-  colTab->save( file );
-  close( file );
+  if (hiveMind) {
+    // The big arrays should be saved out automatically, but we still need to
+    // handle the collision table header.
+    CollisionTableHeader* colTabHeader =
+      reinterpret_cast<CollisionTableHeader*>(weights + RL_MEMORY_SIZE);
+    // Do each field individually, since they don't all line up exactly for an
+    // easy copy.
+    colTabHeader->calls = colTab->calls;
+    colTabHeader->clearhits = colTab->clearhits;
+    colTabHeader->collisions = colTab->collisions;
+    colTabHeader->m = colTab->m;
+    colTabHeader->safe = colTab->safe;
+    if (VERBOSE_HIVE_MIND) {
+      cout << "Saved colTabHeader:" << endl
+        << " calls: " << colTab->calls << endl
+        << " clearhits: " << colTab->clearhits << endl
+        << " collisions: " << colTab->collisions << endl
+        << " m: " << colTab->m << endl
+        << " safe: " << colTab->safe << endl;
+    }
+  } else {
+    int file = open( filename, O_CREAT | O_WRONLY, 0664 );
+    write( file, (char *) weights, RL_MEMORY_SIZE * sizeof(double) );
+    colTab->save( file );
+    close( file );
+  }
   return true;
 }
 
@@ -219,8 +377,8 @@ int LinearSarsaAgent::argmaxQ()
     else if ( value == bestValue ) {
       numTies++;
       if ( rand() % ( numTies + 1 ) == 0 ) {
-	bestValue = value;
-	bestAction = a;
+        bestValue = value;
+        bestAction = a;
       }
     }
   }
@@ -236,6 +394,7 @@ void LinearSarsaAgent::updateWeights( double delta )
     if ( f > RL_MEMORY_SIZE || f < 0 )
       cerr << "f is too big or too small!!" << f << endl;
     weights[ f ] += tmp * traces[ f ];
+    //cout << "weights[" << f << "] = " << weights[f] << endl;
   }
 }
 
@@ -249,7 +408,7 @@ void LinearSarsaAgent::loadTiles( double state[] )
   for ( int v = 0; v < getNumFeatures(); v++ ) {
     for ( int a = 0; a < getNumActions(); a++ ) {
       GetTiles1( &(tiles[ a ][ numTilings ]), tilingsPerGroup, colTab,
-		 state[ v ] / tileWidths[ v ], a , v );
+                 state[ v ] / tileWidths[ v ], a , v );
     }  
     numTilings += tilingsPerGroup;
   }

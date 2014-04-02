@@ -64,6 +64,9 @@ def launch_player(player_type, index, options):
     # TODO However, for my own input, I don't want independent files. Hrmm.
     put_player_file('f', player_type + '_output')
     put_player_file('w', player_type + '_input')
+    if getattr(options, player_type + '_hive', False):
+        # Hive mind!
+        player_options.update(hive = 1)
 
     # Change the dict to a sorted list of args.
     player_options = player_options.items()
@@ -237,6 +240,9 @@ def parse_options(args = None, **defaults):
     parser.add_option(
         '--keeper-count', type = 'int', default = 3,
         help = "Number of keepers.")
+    parser.add_option(
+        '--keeper-hive', action = 'store_true', default = False,
+        help = "Turn hive mind on for keepers (when using standard learner).")
     parser.add_option(
         '--keeper-input',
         help = "Input (file) name for keeper policy agent.")

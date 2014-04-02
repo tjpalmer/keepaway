@@ -107,8 +107,9 @@ int main( int argc, char * argv[] )
   int      iNumTakers                        = 2;
   char     strPolicy[128]                    = "random";
   bool     bLearn                            = false;
-  char     loadWeightsFile[256]               = "";
-  char     saveWeightsFile[256]               = "";
+  char     loadWeightsFile[256]              = "";
+  char     saveWeightsFile[256]              = "";
+  bool     hiveMind                          = false;
   bool     bInfo                             = false;
   bool     bSuppliedLogFile                  = false;
   bool     bSuppliedLogDrawFile              = false;
@@ -161,6 +162,11 @@ int main( int argc, char * argv[] )
           {
             printOptions( );
             exit(0);
+          }
+          else if (strlen(argv[i]) > 2 && argv[i][2] == 'i')
+          {
+            str = &argv[i+1][0];
+            hiveMind = (Parse::parseFirstInt( &str ) == 1 ) ? true : false;
           }
           else
             strcpy( strHost, argv[i+1] );
@@ -287,7 +293,7 @@ int main( int argc, char * argv[] )
     // or "learned!" -> Don't explore at all.
     LinearSarsaAgent* linearSarsaAgent = new LinearSarsaAgent(
       numFeatures, numActions, bLearn, resolutions,
-      loadWeightsFile, saveWeightsFile
+      loadWeightsFile, saveWeightsFile, hiveMind
     );
     // Check for pure exploitation mode.
     size_t length = strlen(strPolicy);
@@ -371,8 +377,9 @@ void printOptions( )
    " d(rawloglevel) int[..int] - level(s) of drawing debug info"     << endl <<
    " e(nable) learning 0/1  - turn learning on/off"                  << endl << 
    " f save weights file   - use file to save weights"               << endl <<
-   " he(lp)                - print this information"                 << endl <<
    " h(ost) hostname       - host to connect with"                   << endl <<
+   " he(lp)                - print this information"                 << endl <<
+   " hi(ve) 0/1            - use mmap to hive mind the team"         << endl <<
    " i(nfo) 0/1            - print variables used to start"          << endl <<
    " j takers  int         - number of takers"                       << endl <<
    " k(eepers) int         - number of keepers"                      << endl <<
