@@ -107,6 +107,8 @@ def launch_server(options):
 
     # Some helpful vars.
     log_name = '%s-%s' % (strftime('%Y%m%d%H%M'), gethostname())
+    if options.label:
+        log_name += "." + options.label
 
     # Build up the server arguments. Alphabetical order follows.
     server_options = []
@@ -259,6 +261,9 @@ def parse_options(args = None, **defaults):
         #type = 'choice', choices = ['hand', 'hold', 'learned', 'rand'],
         default = 'rand',
         help = "The policy for the keepers to follow.")
+    parser.add_option(
+        "--label", default = "",
+        help = "Prefix to the extension for log files.")
     parser.add_option(
         '--log-dir', default = "./logs",
         help = "Directory for storing log files.")
