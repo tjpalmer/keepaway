@@ -10,6 +10,9 @@
 
 class LinearSarsaAgent:public SMDPAgent
 {
+ // Most of these things shouldn't be touched, but it makes for easier
+ // analysis when public.
+ public:
   char weightsFile[256];
   bool bLearning;
   bool bSaveWeights;
@@ -62,7 +65,6 @@ class LinearSarsaAgent:public SMDPAgent
   void setTrace( int f, float newTraceValue );
   void increaseMinTrace();
 
- public:
   LinearSarsaAgent                  ( int    numFeatures,
                                       int    numActions,
                                       bool   bLearn,
