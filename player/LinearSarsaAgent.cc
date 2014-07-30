@@ -108,6 +108,13 @@ LinearSarsaAgent::LinearSarsaAgent( int numFeatures, int numActions, bool bLearn
     loadWeights( loadWeightsFile );
 }
 
+double LinearSarsaAgent::getQ(int action) {
+  if (action < 0 || action > getNumActions()) {
+    throw "invalid action";
+  }
+  return Q[action];
+}
+
 void LinearSarsaAgent::setEpsilon(double epsilon) {
   this->epsilon = epsilon;
 }
