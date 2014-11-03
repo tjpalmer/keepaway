@@ -310,7 +310,7 @@ int main( int argc, char * argv[] )
     // above.
     // Added WorldModel for agents needing richer/relational representation!
     typedef SMDPAgent* (*CreateAgent)(
-      WorldModel&, int, int, bool, char*, char*
+      WorldModel&, int, int, bool, double*, char*, char*, bool
     );
     CreateAgent createAgent = NULL;
 #ifdef WIN32
@@ -333,7 +333,8 @@ int main( int argc, char * argv[] )
     }
 #endif
     sa = createAgent(
-      wm, numFeatures, numActions, bLearn, loadWeightsFile, saveWeightsFile
+      wm, numFeatures, numActions, bLearn, resolutions,
+      loadWeightsFile, saveWeightsFile, hiveMind
     );
   } else {
     // (ha)nd (ho)ld (r)andom

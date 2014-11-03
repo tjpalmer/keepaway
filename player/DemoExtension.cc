@@ -29,8 +29,8 @@ extern "C" {
 
 SMDPAgent* createAgent(
   WorldModel& world,
-  int numFeatures, int numActions, bool learning,
-  char* inputFile, char* outputFile
+  int numFeatures, int numActions, bool learning, double widths[],
+  char* inputFile, char* outputFile, bool hiveMind
 ) {
   DemoAgent* agent = new DemoAgent(world, numFeatures, numActions);
   return agent;

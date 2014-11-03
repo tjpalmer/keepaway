@@ -10,6 +10,7 @@
 
 class LinearSarsaAgent:public SMDPAgent
 {
+ protected:
   char weightsFile[256];
   bool bLearning;
   bool bSaveWeights;
@@ -53,7 +54,7 @@ class LinearSarsaAgent:public SMDPAgent
   double computeQ( int a );
   int  argmaxQ();
   void updateWeights( double delta );
-  void loadTiles( double state[] );
+  virtual void loadTiles( double state[] );
 
   // Eligibility trace methods
   void clearTrace( int f );
